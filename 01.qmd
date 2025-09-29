@@ -1,0 +1,1704 @@
+---
+title: "Avaliação de Aluguéis"
+author: "Luiz Fernando Palin Droubi"
+date: last-modified
+bibliography: referencias.bib
+title-slide-attributes:
+  data-background-image: img/PPT_abertura.png
+  data-background-size: contain
+  #data-background-opacity: "0.5"
+# format: 
+#   pptx:
+#     reference-doc: TEMPLATE_EDUFOR.pptx
+lang: pt
+format:
+  revealjs:
+    background-image: "./img/Valorística_PPT_Fundo_Bege.png"
+    logo: img/logo.png
+    parallax-background-size: cover 
+    width: 1280
+    height: 720
+    # margin-top: 20%
+    theme: [default, style.scss]
+    # logo: img/logo.png
+    # theme: beige
+    # smaller: true
+    slide-number: true
+    scrollable: true
+    incremental: true
+    transition: slide
+    background-transition: fade
+fontsize: 1.8em
+---
+
+# Introdução {background-image="img/PPT_Chapter.png"}
+
+## Introdução {.smaller}
+
+- Os imóveis são bens heterogêneos:
+  - Assim como utilizamos os imóveis para morar
+  - Utilizamos os imóveis para auferir renda imobiliária
+  - Assim, os imóveis são bens de consumo ("*service logement*", de acordo com
+  [@granelle; *apud* @lacerda2020]
+  - Mas também são "*bien d’investissement*" (Idem)
+  
+- Olhando para os imóveis como *bem de consumo*:
+  - Consumimos imóveis todos os dias, seja para morar, seja para trabalhar!
+  - O custo deste consumo pode estar implícito (imóvel próprio)
+  
+- Olhando para o imóvel como um *bem de investimento*:
+  - Quando um investidor compra um título de renda fixa, ele espero ganhar
+  juros
+  - Quando o investidor compra um imóvel, ele espero ganhar renda!
+    - Explícita (aluguéis)
+    - Implícita (imóvel próprio)
+  
+## Relação entre Estoque e Fluxo
+
+- O entendimento da formação dos Aluguéis é essencial para a compreensão do 
+mercado imobiliário 
+
+- Fonte: Adaptada de @Malpezzi2002TheRO
+
+. . . 
+
+
+```{r}
+#| label: tab-StockFlow
+#| fig-cap: "Relação entre Estoque e Fluxo. Fonte: Adaptada de @Malpezzi2002TheRO"
+library(knitr)
+df <- data.frame(
+  Estoque = c("Riqueza", "Dívida Pública", "Ação", "Valor de uma propriedade"),
+  Fluxo = c("Renda", "Déficit Público", "Dividendo", "Aluguel"))
+kable(df)
+```
+
+
+# Matemática Financeira {background-image="img/PPT_Chapter.png"}
+
+## Fluxo de Caixa
+
+```{r}
+CashFlowDiagram <- function(periods, incomes, expenses) {
+  df <- data.frame(Periodo = seq(0, periods, by = 1),
+                   Positive = incomes, Negative = expenses)
+  p <- ggplot(data = df, aes(x = Periodo, xend = Periodo)) +
+    geom_segment(aes(y = 0, yend = Positive, colour = "Positive"),
+    position = "stack", arrow = arrow(length = unit(0.1, "inches")), 
+    linewidth = 1) + 
+  geom_segment(aes(y = 0, yend = Negative, colour = "Negative"), 
+    position = "stack", arrow = arrow(length = unit(0.1, "inches")), 
+    linewidth = 1) + 
+  geom_segment(x = 0, xend = 13, y = 0, yend = 0, linewidth = 1, 
+               arrow = arrow(length = unit(0.1, "inches"))) +
+  scale_x_continuous(breaks = seq(0,periods, by = 1)) +
+  scale_y_continuous(labels = scales::label_currency(),
+    breaks = seq(round(max(expenses, na.rm = T), -2), 
+                 round(max(incomes, na.rm = T), -2), length.out = 5)) +
+  scale_colour_manual("Direction", 
+    values = c("Negative" = "red", "Positive" = "blue")) + 
+  labs(title = "<b style='color:blue'>Entradas</b> e 
+  <b style='color:red'>Saídas</b>", 
+       x = "Período (meses)",
+       y = "Montante") +
+  theme_grey(base_size = 20) +
+  theme(plot.title = ggtext::element_markdown(lineheight = 1.1)) +
+  ggeasy::easy_remove_legend()
+  return(p)
+}
+```
+
+```{r}
+#| label: fig-FC
+#| fig-cap: "Um Fluxo de Caixa Simples"
+#| out-width: "50%"
+library(ggplot2)
+library(ggthemes)
+
+p <- CashFlowDiagram(periods = 12, 
+                     incomes = c(10000, rep(NA, 11), 2000), 
+                     expenses = c(NA, rep(-1000,12)))
+
+p +
+  annotate("text", x = .5, y = 9500, label = "PV", size = 5, color = "blue") +
+  annotate("text", x = 12, y = 2500, label = "FV", size = 5, color = "blue") +
+  annotate("text", x = seq(1.5, 12.5, by = 1),  y = rep(-500, 12),
+           label = paste(rep("R[", 12), 1:12, "]", sep = ""), parse = TRUE,
+           size = 5, color = "red") +
+  annotate("label", x = 6, y = 1000, label = "i(%)", size = 7)
+```
+
+## Essencial de Matemática Financeira
+
+- É necessário um conhecimento básico de matemática financeira para compreender
+e aplicar a Engenharia de Avaliações de Aluguéis
+
+- A matemática financeira é o ramo da matemática aplicado à análise e solução de
+problemas financeiros
+
+- Envolve conceitos como:
+  - Juros
+  - Descontos
+  - Amortizações
+  - Investimentos
+  - Etc.
+  
+## Juros Simples
+
+- Juros simples são juros que incidem apenas em cima de um capital investido 
+($C$), durante $T$ períodos em um negócio a uma taxa $i$ pré-determinada:
+  - $$J = C\cdot i \cdot T$$ {#eq-JurosSimples}
+
+- **Ex.**: uma incorporadora procura investidores para viabilização de um
+  empreendimento imobiliário
+  - Então ela oferece ao mercado cotas com rentabilidade de 36% num prazo de 24 
+  meses
+  - O montante de juros obtido pelo investidor ao final do perí0do de 24 meses
+  será:
+    - $J = C\cdot i \cdot T = 100.000 \cdot 36\% \cdot 1 = \text{R\$ } 36.000,00$
+    
+## Juros Simples
+
+- Com juros simples não importa o período da capitalização:
+  - Transformando para rentabilidade anual ($i = 36/2 = 18\% \text{ a.a.}$):
+    - $J = C\cdot i \cdot T = 100.000 \cdot 18,0\% \cdot 2 = \text{R\$ } 36.000,00$
+  - Transformando para rentabilidade mensal ($i = 36/24 = 1,5\% \text{ a.m.}$):
+    - $J = C\cdot i \cdot T = 100.000 \cdot 1,5\% \cdot 24 = \text{R\$ } 36.000,00$
+  - Transformando para rentabilidade semestral ($i = 36/4 = 9\% \text{ a.s.}$):
+    - $J = C\cdot i \cdot T = 100.000 \cdot 9\% \cdot 4 = \text{R\$ } 36.000,00$
+  - Transformando para rentabilidade trimestral ($i = 36/8 = 4,5\% \text{ a.b.}$):
+    - $J = C\cdot i \cdot T = 100.000 \cdot 4,5\% \cdot 8 = \text{R\$ } 36.000,00$
+
+## Desconto comercial simples
+
+- É comum a aplicação de *desconto comercial simples* (por fora) a títulos 
+recebíveis, tais como notas promissórias e duplicatas, conforme a 
+@eq-DescontoComercial:
+  - $$D_C = VF\cdot i \cdot T$$ {#eq-DescontoComercial}
+
+- **Ex.**: Uma duplicata de R$ 1.800,00 apresenta taxa de desconto para resgate 
+antecipado de 2,5% a.m. Calcule o desconto a ser aplicado para o recebimento a 
+10 dias do vencimento!
+  - O desconto deverá ser proporcional ao número de dias
+    - $D_C = VF\cdot i \cdot T$
+    - $D_C = 1.800\cdot 2,5\% \cdot 10/30$
+    - $D_C = 45 \cdot 1/3 = \text{R\$ }15,00$
+    
+## Desconto racional simples
+
+- O *desconto racional simples* (por dentro), também é calculado com juros
+simples:
+  - $$D_R = \frac{VF\cdot i \cdot T}{1 + i \cdot T}$$ {#eq-DescontoRacional}
+
+- **Ex.**: Uma empresa tem obrigações (notas promissórias) que totalizam 
+R$ 153.000,00 a serem pagas num prazo de 4 meses. Caso opte pelo pagamento
+antecipado, ela tem direito a um *desconto racional* de 6% a.a. Calcule o valor
+para o pagamento antecipado!
+  - O desconto racional é por dentro, ou seja:
+    - $D = (153.000\cdot 6,0\%/12\cdot 4)/(1 + 6,0\%/12 \cdot 4)$
+    - $D = (153.000\cdot 0,5\%\cdot 4)/(1 + 0,5\% \cdot 4)$
+    - $D = (153.000\cdot 0,02)/1,02$
+    - $D = \text{R\$ }3.000,00$
+    
+## Desconto comercial vs. desconto racional simples
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+- O desconto comercial é *por fora*:
+  - $$D_C = P\cdot i \cdot T$$
+:::
+
+::: {.column width="50%"}
+- O desconto racional é *por dentro*:
+  - $$D_R = P\cdot i \cdot T/(1+ i \cdot T)$$
+:::
+
+::::
+
+- O desconto comercial será maior e irá representar uma taxa maior do valor a
+ser efetivamente pago:
+  - $$D_C = D_R (1 + iT)$$ {#eq-RelacaoDescontos}
+
+- O desconto comercial só deve ser utilizado para curtos períodos. Em periodos
+muito longos, o desconto comercial pode ser maior do que o valor do título.
+
+- O desconto racional é mais complexo, porém é preciso para grandes períodos de
+tempo.
+
+## Juros Compostos
+
+- Os juros compostos também são comuns na análise de investimentos e 
+financiamentos
+
+- Estes incidem não apenas sobre o capital inicial investido, mas
+também sobre os juros auferidos a cada período, conforme a @eq-JurosCompostos:
+  - $$J = C[(1+i)^n - 1]$$ {#eq-JurosCompostos}
+  
+- **Ex.**: Calcular os juros a que o investidor teria direito se a incorporadora
+o remunerasse a uma taxa de juros composta de 1,5% a.m.:
+  - $J = 100.000,00[(1+1,5\%)^{24} - 1]$
+  - $J \approx 100.000,00\cdot 0,4295$
+  - $J \approx 42.950,00$
+  
+```{r}
+library(FinCal)
+PV <- -100000
+M <- fv(r = 1.5/100, n = 24, pv = PV)
+J <- M + PV
+```
+
+  
+- Comparar com os juros contratuais (simples) 1,50% a.m., que rendem apenas
+R$ 36.000,00:
+  - -16% no total
+  
+## Descontos Compostos
+
+- Os descontos podem ser calculados baseados em uma taxa de juros compostos, 
+da seguinte maneira:
+  - $$D = M \cdot \left (1 - \frac{1}{(1 + i)^T} \right)$$ {#eq-DescontosCompostos}
+  
+- Seja a dívida de R$ 153.000,00 utilizada para exemplificar o desconto racional
+simples. Se o desconto for de 0,50%a.m., porém em juros compostos, temos:
+
+  - $D = 153.000,00 \cdot 1/(1+0,5\%)^4$
+  - $D = 153.000,00 \cdot 0,9802$
+  - $D \approx 149.970,00$
+  
+- Ver [Link](https://lfpdroubi.github.io/Economica/anexo_II.html) (Fator de
+Atualização do Capital)
+
+## Valor Futuro ou Montante
+
+- O Valor Futuro ($VF$), ou Montante ($M$), de um investimento a juros compostos
+apóse $T$ períodos, a uma taxa de juros composta $i$ pode ser calculado
+conforme a @eq-VF:
+  - $$M = C(1+i)^T$$ {#eq-VF}
+  
+- **Ex.**: ao investir na caderneta de poupança o montante de R$ 10.000,00,
+  calcule o saldo após um período de 1 ano, considerando a remuneração da 
+  caderneta a uma taxa de 0,5% a.m.
+    - $M = C(1+i)^T$
+    - $M = 10.000(1+0,5\%)^{12}$
+    - $M = 10.000\cdot 1,061678$
+    - $M = 10.616,78$
+    
+- Ver [Link](https://lfpdroubi.github.io/Economica/anexo_I.html) (Fator de Juros
+Compostos)
+
+```{r}
+FV <- fv(r = .5/100, n = 12, pv = -10000)
+```
+
+    
+## Juros Simples vs. Juros Compostos
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+- Os juros simples não incidem sobre os juros do período anterior, então podem
+ser simplesmente multiplicados:
+  - $$\text{VF} = \text{VP}\cdot (1 + iT)$$
+:::
+
+::: {.column width="50%"}
+- Os juros compostos incidem sobre os juros do período anterior, então deve-se 
+utilizar a lei da potência:
+  - $$\text{VF} = \text{VP}\cdot (1 + i)^T$$
+:::
+
+::::
+
+## Taxas nominais vs. Taxas efetivas
+
+- Quanto trabalhando com juros compostos, é importante conhecer o período de
+capitalização.
+
+- Por exemplo:
+  - Uma taxa de juros (nominal) de 12% a.a., capilizada mensalmente, qual o juro
+  efetivo anual?
+    - $i_{ef} = i_{nom}/T = 12\%/12 = 1\% \text{ a.m.}$
+    - $i_{ef} = (1 + 1\%)^{12} - 1 = 12,6825\% \text{ a.a.}$
+    
+```{r}
+ear(r = 12/100, m = 12)
+# or:
+EIR(r = 12/100, n = 12, p = 1)
+```
+
+    
+## Taxas de juros equivalentes
+
+- Duas taxas expressas em períodos diferentes são equivalentes quando, aplicadas 
+a uma mesmo capital e em um mesmo intervalo de tempo, produzem o mesmo montante.
+
+- Uma taxa anual pode ser transformada para uma taxa semestral ou uma taxa 
+mensal (ou bimestral, trimestral, etc.) ou ainda para uma taxa ao dia, ou ao dia
+útil, da maneira que for mais conveniente.
+
+- **Ex.**: a caderneta de poupança remunera a uma taxa de 0,50% a.m.,
+acrescida da Taxa Referencial (TR):
+  - $i = 0,5\% \text{ a.m.} + \text{TR}$
+  - Qual a taxa equivalente anual, trimestral e diária da poupança?
+    - $i = (1 + 0,5\%)^{12} - 1 \approx 6,17\% \text{ a.a.}$
+    - $i = (1 + 0,5\%)^{4} - 1 \approx 2,015\% \text{ a.t.}$
+    - $i = (1 + 0,5\%)^{1/30} - 1 \approx 0,0166 \% \text{ a.d.}$
+    
+```{r}
+#| eval: false
+# Taxas de juros equivalentes:
+# Poupança: .5% a.m., taxa equivalente a.a.:
+EIR(12*.5/100, n = 12, p = 1)
+# Poupança: taxa anual, equivalente a.m:
+EIR(6.167781/100, n = 1, p = 12)
+```
+    
+## Taxas de juros real
+
+- A taxa de juros real, $i$, é igual à taxa de juros nominal (ou aparente), $e$,
+descontada da taxa de inflação, $d$:
+  - $$i = \frac{1 + e}{1 + d} - 1$$
+  
+- Exemplo: Dado um CDB que remunera 100% da taxa CDI de 15% a.a., a uma taxa de
+inflação de 5% a.a., calcule a taxa real de rendimento da aplicação:
+  - $$i = \frac{1 + 15\%}{1 + 5\%} - 1 = 9,524\%$$
+
+```{r}
+(1+15/100)/(1+5/100)-1
+```
+  
+  
+## Taxa *over*
+
+- É um taxa nominal, usualmente expressa ao ano, porém computada por dia útil 
+(d.u.):
+  - $$\text{VF} = \text{VP} \left (1 + \frac{\text{tx. over}}{100} \right )^{1/252}$$ {#eq-TaxaOver}
+  
+- A taxa efetiva, portanto, em um dia útil, é:
+
+  - $$\text{taxa d.u.} = \left (1 + \frac{\text{tx. over}}{100} \right )^{1/252}$$
+  
+## Taxa *over*
+
+### Exemplo
+
+- Uma aplicação de R$ 10.000,00 a uma taxa *over* de 15% a.a., durante 22 dias 
+úteis, qual a taxa efetiva e o saldo ao final do período?
+
+  - $\text{taxa d.u.} = \left ( 1 + \frac{15}{100}\right )^{\frac{1}{252}}-1$
+  - $\text{taxa d.u.} = 1,0005548 - 1$
+  - $\text{taxa d.u.} = 0,05548\% \text{ a.d.u.}$
+  - $\text{VF} = 10.000,00 \cdot (1 + 0,05548\%)^{22}$
+  - $\text{VF} = 10.000,00 \cdot 1,012277$
+  - $\text{VF} = \text{R\$ } 10.122,77$  
+  
+```{r}
+EIR(r = .15, n = 1, p = 252)
+```
+
+
+## Correção monetária
+
+- A correção monetária é realizada aplicando-se uma taxa de referência, como a
+TR, ou um índice como o IPCA ou IGPM. Sobre o valor atualizado, aplica-se uma 
+taxa real de juros:
+  - $$\text{VF} = \text{VP} \cdot (1 + \text{CM}) \cdot (1 + i)$$
+  
+- Exemplo: se um investimento é remunerado a uma taxa de juros de 10% a.a. em
+termos reais (*i.e.*, após C.M. pela TR), calcule o saldo do investimento após 
+um ano, se o valor inicial investido foi de R$ 1.000,00  e a TR do período foi 
+de 1,70%: 
+  - $$i = 1.000,00 \cdot (1 + 1,70\%)\cdot (1 + 10\%) = 1.000,00\cdot 1,1187 = 1.118,70$$
+
+## Anuidades
+
+- Anuidades são séries de pagamentos ou recebimentos iguais, com um intervalo de
+tempo fixado.
+  - **Ex.**: Compra de uma moto em 12 prestações mensais iguais de R$ 1.000,00
+  - As prestações anuais (ou mensais) são denominadas de **PMT**
+  - O valor presente das prestações pode ser calculado trazendo os pagamentos/
+  recebimentos de cada período ao valor presente descontados de uma taxa de
+  juros.
+  - $$\text{VP} = \frac{\text{PMT}}{(1+i)^1} + \frac{\text{PMT}}{(1+i)^2} + \frac{\text{PMT}}{(1+i)^3} + \cdots + \frac{\text{PMT}}{(1+i)^{12}}$$ {#eq-PMT}
+  
+## Anuidades
+
+```{r}
+#| label: fig-FCAnuidades
+#| fig-cap: "Fluxo de Caixa de uma Anuidade."
+#| out-width: "50%"
+p <- CashFlowDiagram(periods = 12, 
+                     incomes = c(10000, rep(NA,12)), 
+                     expenses = c(NA, rep(-1000, 12)))
+
+p +
+  annotate("text", x = .5, y = 10000, label = "VP", size = 5, color = "blue") +
+  annotate("text", x = 1:12, y = 350, label = "PMT", size = 4, color = "red")
+```
+
+## Anuidades
+
+- Se sabemos que a taxa de juros nominal do financiamento é de 12% a.a.
+  - O que representa uma taxa equivalente de  aprox. 0,95% a.m., então:
+    - $\text{VP} = \frac{1.000}{(1 + 0,95\%)^1} + \frac{1.000}{(1+0,95\%)^2} + \frac{1.000}{(1+0,95\%)^3} + \cdots + \frac{1.000}{(1+0,95\%)^{12}}$
+    - $\text{VP} = 990,59 + 981,27 + 972,03 + \ldots + 892,74$
+    - $\text{VP} \approx \text{R\$ } 11.290,00$
+  
+```{r}
+#| eval: false
+pv.annuity(r = .95/100, n = 12, pmt = -1000)
+# More precise:
+pv.annuity(r = EIR(.12, n = 1, p=12), n = 12, pmt = -1000)
+```
+
+- Podemos calcular **VP** facilmente através da @eq-Anuidade:
+  - $$\text{VP} = \text{PMT} \frac{(1+i)^T - 1}{i(1+i)^T}$$ {#eq-Anuidade}
+  
+- Assim, para o exemplo acima, através da @eq-Anuidade, temos:
+  - $\text{VP} = 1.000,00 \frac{(1+0,95\%)^{12}-1}{0,95\%(1+0,95\%)^{12}} = 1.000,00 \cdot 11,292 \approx  \text{R\$ } 11.292,00$
+  
+- Ver [Link](https://lfpdroubi.github.io/Economica/anexo_V.html) (Fator de
+Valor Presente)
+
+## Anuidade Devida
+
+- A anuidade devida é a anuidade que é paga no *início* de cada período, ao
+contrário da convenção de pagamentos no final de cada período. É comum em
+contratos de aluguel quando inexiste garantia (caução, fiança, seguro-fiança, etc.). Neste caso:
+  - $$\text{VP} = \text{PMT}\cdot (1+i)\cdot \frac{(1+i)^T - 1}{i(1+i)^T}$$ {#eq-AnuidadeDevida}
+  - **Ex.**: Um edifício comercial será locado pelo prazo de 10 anos a um
+  aluguel anual de R\$ 120.000,00, pagos antecipadamente a cada ano. Calcule o
+  valor presente das anuidades, considerando uma taxa de 12% a.a.:
+    - $\text{VP} = 120.000 (1+12\%) \frac{(1+12\%)^{10} - 1}{12\%(1+12\%)^{10}}$
+    - $\text{VP} \approx 120.000\cdot 1,12 \cdot 5,65$
+    - $\text{VP} \approx \text{R\$ } 759.360,00$
+    
+```{r}
+#| eval: false
+pv.annuity(.12, 10, 120000, type = 1)
+```
+
+
+## Perpetuidade
+
+- Pode-se demonstrar que, quando $T \rightarrow \infty$, então a @eq-Anuidade
+tende a:
+
+  - $$\text{VP} = \frac{\text{PMT}}{i}$$ {#eq-Perpetuidade}
+  
+- **Ex.:** se uma aplicação rende em termos reais uma taxa de juros de 6% a.a.,
+calcule o montante atual necessário para o rendimento real de uma prestação de
+R$ 1.000,00 mensais.
+
+  - $\text{VP} = \frac{12\cdot1000}{6\%} = \text{R\$ }200.000,00$
+
+
+```{r}
+#| eval: false
+pv.perpetuity(r = 6/100, pmt = -12*1000)
+# or:
+FinancialMath::perpetuity.level(pmt = 12*1000, i = 6/100)
+```
+
+## Perpetuidade com taxa de crescimento constante
+
+- Pode-se demonstrar que, se as prestações crescem a uma taxa constante $g$, 
+então a @eq-Perpetuidade se modifica da seguinte forma:
+
+  - $$\text{VP} = \frac{\text{PMT}}{(i-g)}$$ {#eq-Perpetuidade2}
+  
+- **Ex.:** se uma aplicação rende em termos reais uma taxa de juros de 6% a.a.,
+calcule o montante atual necessário para o rendimento real de R$ 1.000,00 
+mensais + 3,5% a.a. (inflação).
+
+  - $\text{VP} = \frac{12\cdot1000}{(6\%-3,5\%)} = \text{R\$ }480.000,00$
+
+
+```{r}
+#| eval: false
+pv.perpetuity(r = 6/100, pmt = -12*1000, g = 3.5/100)
+## or:
+FinancialMath::perpetuity.geo(p = 12*1000, k = 3.5/100, i = 6/100)
+```
+
+## Perpetuidade com crescimento aritmético
+
+- Se as prestações aumentam aritméticamente (*e.g.* R$ 100,00 por período),
+então:
+
+- **Ex.:** se uma aplicação rende em termos reais uma taxa de juros de 6% a.a.,
+calcule o montante atual necessário para o rendimento real de uma prestação de
+R$ 1.000,00 mensais + 3,5% a.a. (inflação).
+
+  - $\text{VP} = \frac{12\cdot1000}{(6\%-3,5\%)} = \text{R\$ }480.000,00$
+  
+```{r}
+#| eval: false
+FinancialMath::perpetuity.arith(p = 12*1000, q = 250, i = 6/100)
+```
+
+## Perpetuidade devida
+
+- No caso da perpetuidade devida, *i.e.*, com pagamentos no *início* de cada
+período, então a @eq-Perpetuidade fica:
+  - $$\text{VP} = (1+i)\frac{\text{PMT}}{i}$$ {#eq-PerpetuidadeDevida}
+  
+- **Ex.:** uma grande empresa de material esportivo oferece um contrato para 
+pagar perpetuamente a um jogador de futebol a quantia de US$ 10 milhões anuais,
+a partir do momento da assinatura do contrato. Calcule o valor que a empresa 
+deve aplicar para garantir o pagamento deste contrato, considerando uma taxa de 
+juros anual de 8%:
+  - $\text{VP} = (1+8\%)\cdot \frac{10.000.000,00}{8\%}$
+  - $\text{VP} = 1,08\cdot 125.000.000,00$
+  - $\text{VP} = 135.000.000,00
+
+# Engenharia Econômica {background-image="img/PPT_Chapter.png"}
+
+## Essencial de Engenharia Econômica
+
+- A Engenharia Econômica é a técnica que estuda a viabilidade econômica de
+projetos
+  - A Engenharia Econômica, assim permite respondermos questões do tipo:
+    - Comprar um equipamento mais barato, com menor vida útil, ou comprar um
+    equipamento mais caro, com maior vida útil?
+    - Construir uma nova planta (fábrica)?
+    - Comprar um apartamento à vista ou financiar?
+    - Comprar ou *alugar* um apartamento?
+    
+## Essencial de Engenharia Econômica
+
+- Para ser possível comparar projetos com investimentos financeiros, é importante
+conhecermos um pouco do mercado financeiro:
+  - Quais são os principais tipos de investimentos disponíveis?
+  - Quais são as principais formas de financiamento?
+  
+## Tipos de investimentos de Renda Fixa disponíveis no mercado
+
+- Certificado de Depósito Bancário (CDB): são títulos de renda fixa que 
+usualmente remuneram o depositante a uma taxa atrelada à taxa DI
+  - Por exemplo, um CDB remunera o depositante a uma taxa de 102% da taxa DI. Um
+  investidor aplica R$ 1.000,00 neste CDB. Considerando uma taxa DI de 10,15% 
+  a.a., qual é o valor atualizado deste CDB após um período de 30 dias úteis?
+    - $TDI = (1+DI)^{1/252} - 1 = (1+10,15\%)^{1/252} - 1 = 0,03837\% \text{ a.d.u.}$
+    - $\text{Fator DI} = (TDI\cdot 102\% + 1)^{\text{d.u.}} = (0,03837\% \cdot 102/100 + 1)^{30} = 1,011808$
+    - $VF = VP\cdot \text{Fator DI} = 1.000,00 \cdot 1,011808 = \text{R\$ } 1.011,81$
+    
+## Tipos de investimentos de Renda Fixa disponíveis no mercado
+
+- Também são comuns os CDB's que remuneram DI + Spread:
+  - Por exemplo: DI + 2% a.a. Após 30 dias, com DI de 10,15% a.a., qual o valor
+  atualizado?
+    - $\text{Fator DI} = (1 + TDI)^{\text{d.u.}} = (1 + 0,03837\%)^{30} = 1,011575$
+    - $\text{Fator Spread} = (1+Spread)^{\text{d.u.}/252} = (1+2\%)^{30/252} = 1,00236$
+    - $VF = VP \cdot  \text{Fator DI} \cdot \text{Fator Spread} = 1.000,00 \cdot 1,011575 \cdot 1,00236 = 1.013,96$ 
+    
+
+## Tipos de investimentos de Renda Fixa disponíveis no mercado
+
+- O Engenheiro deve notar que os CDB's são pós-fixados!
+  - Isto é, a taxa real de rendimento só é conhecida no final do investimento,
+  pois a taxa DI é variável!
+  - Especialmente em projetos mais longos, pode não ser realista considerar como
+  taxa livre de risco a taxa DI, pois estã provavelmente não se manterá constante
+  durante todo o projeto.
+  - Por isso é preciso conhecer também os investimento pré-fixados, como as 
+  Letras do Tesouro Nacional (LTN)
+  - As LTN são títulos prefixados que possuem um valor de face de R$ 1.000,00
+  com vencimentos variados. 
+    - O investidor adquire uma LTN a um preço menor do que o valor de face. Ao
+    valor de compra está associada uma taxa de desconto.
+    
+    
+## Letras do Tesouro Nacional (LTN)
+    
+```{r}
+#| label: fig-FCLTN
+#| fig-cap: "Fluxo de Caixa de uma LTN."
+#| out-width: "50%"
+p <- CashFlowDiagram(periods = 12, 
+                     incomes = c(rep(NA, 12), 1000), 
+                     expenses = c(-600, rep(NA,12)))
+
+p +
+  annotate("text", x = .5, y = -550, label = "VP", size = 5, color = "red") +
+  annotate("text", x = 11, y = 900, label = "VF", size = 5, color = "blue") +
+  annotate("label", x = 6, y = 200, label = "i(% a.d.u)", size = 7)
+```
+    
+## Letras do Tesouro Nacional (LTN)
+
+- As LTN, portanto, seguem a @eq-LTN, considerando-se sempre um valor de face
+$VF = 1.000,00$:
+  - $$VF = VP \cdot (1 + i)^{\text{d.u.}/252}$$ {#eq-LTN}
+  
+- As LTN, portanto, são sempre adquiridas com um desconto em relação ao valor
+de face. Esse desconto equivale a uma taxa de desconto do título.
+  - **Ex.**: Se uma LTN está sendo oferecida com um desconto de R$ 250,00 por
+  título (*i.e.*, se ela está sendo negociada a R\$ 750,00), a 720 dias úteis do 
+  vencimento, calcule a taxa de desconto deste título:
+  - $1.000 = (1.000-250)\cdot(1+i)^{720/252}$
+  - $1.000/750 = (1+i)^{720/252}$  
+  - $(1.000/750)^{252/720} = (1+i)$
+  - $i = 1,333^{0,35} - 1$
+  - $i \approx 10,60\% \text{ a.a.}$
+
+```{r}
+#| eval: false
+bdy(250, 1000, 720)
+bdy2mmy(.125, 720)
+```
+
+
+  
+### Letras do Tesouro Nacional (LTN)
+
+- **Ex.**: um investidor é informado que uma LTN disponível no mercado secundário
+de títulos públicos, com vencimento em 02/01/2029, no dia 08/09/2025 (ou seja, a
+829 dias úteis do vencimento), oferecia uma rentabilidade de 20% a.a. Calcule o 
+preço de mercado do título naquela data.
+  - $1.000,00  = VP\cdot (1 + 20\%)^{829/252}$
+  - $VP = 1.000,00/1,827 = 548,93$
+
+```{r}
+#| eval: false
+library(bizdays)
+dois_janeiro_2029 <- as.Date("2029-01-02")
+oito_setembro_2025 <- as.Date("2025-09-08")
+bizdays(dois_janeiro_2029, oito_setembro_2025, "Brazil/ANBIMA")
+```
+
+- Ver [link](https://calculadorarendafixa.com.br/)
+
+
+
+## Letras do Tesouro Nacional (LTN)
+
+- O que o analista deve perceber é que as LTN são uma forma de garantir uma
+rentabilidade pré-definida por um período maior.
+  - As taxas CDI oscilam no curto prazo. Uma rentabilidade de 15% a.a. no CDI
+  pode não ser um bom parâmetro para a taxa livre de risco para um projeto com
+  duração de 4 anos, haja vista que esta taxa tende a cair (ou subir) com o 
+  tempo
+  - Ao adquirir uma LTN o investidor fixa a taxa por um período, garantindo a
+  rentabilidade contratada.
+  - Porém, essa garantia de rentabilidade tem um risco: a inflação pode subir e
+  corroer a rentabilidade do título.
+
+## Essencial de Engenharia Econômica
+
+
+-   Valor Presente Líquido de um investimento:
+
+. . . 
+
+
+$$
+VPL = -I + \sum_{t=1}^T \frac{R_t - C_t}{(1+i)^t}
+$$ {#eq-vpl}
+
+-   Quando o fluxo de caixa é constante, o VPL também pode ser escrito em função
+do Fator de Recuperação do Capital (FRC):
+
+. . . 
+
+
+$$
+VPL = -I + \frac{R_l}{FRC(i,T)}
+$$ {#eq-vpl2}
+
+
+## Essencial de Engenharia Econômica
+
+-   Pode-se considerar, ainda, um valor residual $D$ ao final do período de análise:
+
+. . . 
+
+$$
+VPL = -I + \frac{R_l}{FRC(i,T)} + D.FAC(i,T)
+$$ {#eq-vpl3}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+- $$FRC(i, T) = \frac{i.(1+i)^T}{(1+i)^T-1}$$ {#eq-frc}
+:::
+
+::: {.column width="50%"}
+- $$FAC(i,T) = \frac{1}{(1+i)^T}$$ {#eq-fac}
+:::
+
+::::
+
+## Essencial de Engenharia Econômica
+
+- FRC e FAC podem ser tabelados!
+
+- FRC:
+
+. . . 
+
+```{r}
+# library(kableExtra)
+FRC <- function(i, t) {
+  i*(1+i)^t/((1+i)^t-1)
+}
+library(tibble)
+frc <- tribble(
+  ~n,       ~`1%`,       ~`2%`,       ~`3%`,       ~`4%`,       ~`5%`,       ~`6%`,       ~`7%`,      ~`8%`,        ~`9%`,      ~`10%`, 
+   1, FRC(.01, 1), FRC(.02, 1), FRC(.03, 1), FRC(.04, 1), FRC(.05, 1), FRC(.06, 1), FRC(.07, 1), FRC(.08, 1), FRC(.09, 1), FRC(.10, 1),
+   2, FRC(.01, 2), FRC(.02, 2), FRC(.03, 2), FRC(.04, 2), FRC(.05, 2), FRC(.06, 2), FRC(.07, 2), FRC(.08, 2), FRC(.09, 2), FRC(.10, 2),
+   3, FRC(.01, 3), FRC(.02, 3), FRC(.03, 3), FRC(.04, 3), FRC(.05, 3), FRC(.06, 3), FRC(.07, 3), FRC(.08, 3), FRC(.09, 3), FRC(.10, 3),
+   4, FRC(.01, 4), FRC(.02, 4), FRC(.03, 4), FRC(.04, 4), FRC(.05, 4), FRC(.06, 4), FRC(.07, 4), FRC(.08, 4), FRC(.09, 4), FRC(.10, 4),
+   5, FRC(.01, 5), FRC(.02, 5), FRC(.03, 5), FRC(.04, 5), FRC(.05, 5), FRC(.06, 5), FRC(.07, 5), FRC(.08, 5), FRC(.09, 5), FRC(.10, 5),
+   6, FRC(.01, 6), FRC(.02, 6), FRC(.03, 6), FRC(.04, 6), FRC(.05, 6), FRC(.06, 6), FRC(.07, 6), FRC(.08, 6), FRC(.09, 6), FRC(.10, 6)
+)
+frc |>
+  kable(digits = 4,
+        format.args = list(big.mark = ".", decimal.mark = ","))
+```
+
+## Essencial de Engenharia Econômica
+
+-   FAC:
+
+. . . 
+
+```{r}
+FAC <- function(i, t) {
+  1/(1+i)^t
+}
+library(tibble)
+fac <- tribble(
+  ~n,       ~`1%`,       ~`2%`,       ~`3%`,       ~`4%`,       ~`5%`,       ~`6%`,       ~`7%`,      ~`8%`,        ~`9%`,      ~`10%`, 
+   1, FAC(.01, 1), FAC(.02, 1), FAC(.03, 1), FAC(.04, 1), FAC(.05, 1), FAC(.06, 1), FAC(.07, 1), FAC(.08, 1), FAC(.09, 1), FAC(.10, 1),
+   2, FAC(.01, 2), FAC(.02, 2), FAC(.03, 2), FAC(.04, 2), FAC(.05, 2), FAC(.06, 2), FAC(.07, 2), FAC(.08, 2), FAC(.09, 2), FAC(.10, 2),
+   3, FAC(.01, 3), FAC(.02, 3), FAC(.03, 3), FAC(.04, 3), FAC(.05, 3), FAC(.06, 3), FAC(.07, 3), FAC(.08, 3), FAC(.09, 3), FAC(.10, 3),
+   4, FAC(.01, 4), FAC(.02, 4), FAC(.03, 4), FAC(.04, 4), FAC(.05, 4), FAC(.06, 4), FAC(.07, 4), FAC(.08, 4), FAC(.09, 4), FAC(.10, 4),
+   5, FAC(.01, 5), FAC(.02, 5), FAC(.03, 5), FAC(.04, 5), FAC(.05, 5), FAC(.06, 5), FAC(.07, 5), FAC(.08, 5), FAC(.09, 5), FAC(.10, 5),
+   6, FAC(.01, 6), FAC(.02, 6), FAC(.03, 6), FAC(.04, 6), FAC(.05, 6), FAC(.06, 6), FAC(.07, 6), FAC(.08, 6), FAC(.09, 6), FAC(.10, 6)
+)
+fac |>
+  kable(digits = 4,
+        format.args = list(big.mark = ".", decimal.mark = ","))
+```
+
+## Exemplo 1
+
+- Compra de um carro por R\$ 95.000,00 à vista, deixando de pagar aluguel de R\$ 24.000,00/ano.
+- Em 5 anos, a uma TMA de 8,0% a.a., este investimento se paga?
+- Desconsiderar seguros, IPVA, etc.
+  - Dados:
+    - $I = 95.000,00$; $R = 24.000,00$; $i=8,00\% a.a.$; $T=5$
+  - Solução:
+    - $FRC(8\%, 5) = \frac{0,08.(1+0,08)^{5}}{(1+0,08)^{5}-1} \approx 0,25$
+    - $VPL = -95.000 + 24.000/0,25$
+    - $VPL \approx -95.000 + 96.000$
+    - $VPL \approx + 1.000,00$
+    
+```{r}
+#| eval: false
+npv(r = 8/100, cf = c(-95000, rep(24000, 5)))
+-95000+24000/((.08*(1+.08)^5)/((1+.08)^5-1))
+```
+
+        
+## Exemplo 2
+
+- Mesmo exemplo anterior, considerando que o carro pode ser vendido a 60% do 
+valor de aquisição ao final do período.
+- Considerar também um custo de R$ 12.000,00 por ano em manutenções, IPVA, etc.
+  - Dados:
+    - $I = 95.000,00$, $R = 24.000,00$, $C = 12.000$, $i=8,00\% a.a.$, $T=5$, $VF = 57.000$
+  - Solução:
+    - $FAC(8\%,5) = 1/(1 +.08)^5 =0,6806$
+    - $VPL = -95.000 + (24.000-12.000)/0,25 +  57.000\times0,6806$
+    - $VPL \approx -95.000 + 48.000 + 38.800$
+    - $VPL \approx -8.200,00$
+    
+```{r}
+#| eval: false
+npv(r = 8/100, cf = c(-95000, rep((24000-12000), 5))) + 
+pv(r = 8/100, n = 5, fv = .6*-95000)
+```
+
+## Exemplo 3
+
+- Compra de uma geladeira de R$ 4.000,00 em 12x R\$ 400,00, com uma TMA igual a 
+10,0 % a.a.:
+  - Dados:
+    - $I = -4.000$; $R = -400$; $i = (1+0,01)^{1/12} - 1 = 0,80\% a.m.$
+  - Solução:  
+    - $FRC(0,8\%, 12) = \frac{0,008.(1+0,008)^{12}}{(1+0,008)^{12}-1} = 0,0877$
+    - $VPL = -(-4.000) + (-400)/0,0877$
+    - $VPL = 4.000 - 4.561,00$
+    - $VPL \approx -560,00$
+    
+```{r}
+#| eval: false
+npv(r = .8/100, c(4000, rep(-400, 12)))
+```
+
+        
+## Exemplo 4
+
+- Considerar que com a nova geladeira haverá uma economia de R$50,00 mensais com energia:
+  - Dados:
+    - $I = -4.000$; $R = -400$; $C = -50,00$; $i = (1+0,08)^{1/12} - 1 = 0,80\% a.m.$
+  - Solução:
+    - $FRC(0,8\%, 12) = 0,0877$
+    - $VPL = -(-4.000) + [-400 - (-50)]/0,0877$
+    - $VPL = 4.000 - 350/0,0877$
+    - $VPL  \approx 10,00$
+    
+```{r}
+#| eval: false
+npv(r = .8/100, c(4000, rep((-400+50), 12)))
+```
+
+
+## Reflexões
+
+- O importante é compreender o problema, ao invés de apenas aplicar as fórmulas
+  - No caso do carro, a ideia geral não é um cálculo exato, mas apenas criar uma
+  percepção se vale a pena comprar ou alugar um carro
+    
+- Dificilmente os valores do fluxo de caixa real serão idênticos aos previstos
+  - O problema pode ser posto de maneira simplificada, inicialmente.
+  - Após uma primeira conta para aferir a ordem de grandeza das parcelas, o 
+  problema pode ser feito mais complexo
+        
+## Reflexões
+
+- No caso da geladeira, o importante é perceber:
+  - A decisão pode ser entre comprar a geladeira agora de forma parcelada, ou 
+  guardar o dinheiro das prestações para comprar depois, à vista!
+  - Se a pessoa opta por comprar a geladeira à vista após o período de 12 meses,
+  ela deixou de economizar R$ 50,00 mensais com a conta de energia durante este
+  período
+    - Seria um erro desconsiderar esta economia "operacional"
+    - A decisão entre comprar agora ou comprar depois depende também de outras 
+    coisas. Quem garante que a geladeira estará por R$ 4.000,00 daqui a 12 meses?
+    
+## Reflexões
+
+- A TMA é exclusividade do empreendedor/indivíduo!
+  - Se o cidadão tem guardado apenas R$ 4.000,00, ele só irá comprar a geladeira
+  à vista se ele tiver um ótimo desconto!
+  - Se o cidadão possui uma boa poupança e R$ 4.000,00 não é para ele um montante
+  significativo, então ele pode comprar a vista, por mínimo que seja o desconto.
+    
+## Reflexões
+
+- @Machline [p. 60]:
+
+. . . 
+
+> Como calcular a taxa de retorno? Ela será, em geral, igual, no mínimo, à taxa
+de retorno que a empresa desfruta em suas operações habituais. Se o empresário
+achar que as oportunidades de lucro elevado se estão esgotando, ele pode
+contentar-se, em determinado investimento, com uma taxa de retorno inferior à
+que costuma obter. De qualquer maneira, ele é o único juiz da taxa de retorno
+que deseja. Se o empresário achar o negócio seguro, poderá contentar-se com uma
+taxa de retorno pequena, igual ou pouco superior à taxa de juros cobrada, na
+praça, para empréstimo de dinheiro. Se o empresário considerar o empreendimento
+arriscado, desejará uma taxa de retorno bem mais elevada. A taxa de retorno,
+em suma, depende das diretrizes financeiras da empresa; terá um valor 
+eminentemente individual, variando com a conjuntura econômica, no momento de
+tomar a decisão de investir, e refletindo a personalidade e a atitude do 
+empresário.
+
+## Essencial de Engenharia Econômica
+
+-   Para períodos muito longos ($n \rightarrow \infty$), $FRC = i$!
+
+-   Exemplo: taxa de 10%a.a., durante 30/40/50 anos, calcule a FRC:
+
+    - $FRC(10\%,30) = \frac{10\%.(1+10\%)^{30}}{(1+10\%)^{30}-1} = \frac{10\%.17,45}{16,45} = 0,1061 = 10,61\%$
+    - $FRC(10\%,40) = \frac{10\%.(1+10\%)^{40}}{(1+10\%)^{40}-1} = \frac{10\%.45,26}{44,26} = 0,1023 = 10,23\%$
+    - $FRC(10\%,50) = \frac{10\%.(1+10\%)^{50}}{(1+10\%)^{50}-1} = \frac{10\%.117,39}{116,39} = 0,1009 = 10,09\%$
+
+-   Assim, para investimentos com FC muito longos, a equação [-@eq-vpl2] torna-se:
+
+    -   $$VPL = -I + \frac{R}{i}$$ {#eq-vpl3}
+    
+## Essencial de Engenharia Econômica
+
+- Da equação [-@eq-vpl3] derivam (VPL = 0):
+  - O *Método da Renda*
+  - O *Método da Remuneração do Capital*
+  
+## Essencial de Engenharia Econômica
+
+:::: {.columns}
+
+::: {.column width="50%"}
+-   O *Método da Renda*: 
+  - $$V_{imóvel} = \frac{Al}{i}$$ {#eq-metodoRenda}
+:::
+
+::: {.column width="50%"}
+-   O *Método da Remuneração do Capital*: 
+  - $$Al = V_{imóvel}.i$$ {#eq-metodoRemuneracaoCapital}
+:::
+
+::::
+
+    
+## Essencial de Engenharia Econômica
+
+### Métoda da Renda
+
+  - Um imóvel tem aluguel igual a R$ 3.000,00 mensais, calcule seu valor de venda:
+    - $$V_{imóvel} = \frac{Al}{i} = \frac{12.3000}{6\%}=\text{ R\$ }\, 600.000,00$$ 
+
+  - Mais preciso: 
+    - $$V_{imóvel} = \frac{Al}{i} = \frac{3000}{(1+6\%)^{1/12}-1}=\text{ R\$ }\, 616.326,40$$
+
+## Essencial de Engenharia Econômica
+
+### Método da Remuneração do Capital
+
+  - Um imóvel possui VM de R$ 500.000,00, calcule o valor justo do aluguel, para uma taxa de 6% a.a.
+    - $$Al = V_{imóvel}.i = \frac{500.000\times6\%}{12}=\text{ R\$ }\, 2.500,00$$
+    
+  - Mais preciso:
+    - $$Al = V_{imóvel}.i = 500.000\times[(1+6\%)^{1/12}-1] \approx \text{ R\$ }\, 2.435,00$$
+
+## Essencial de Engenharia Econômica
+
+-   Para calcular a renda (ou prestação de um empréstimo) sobre um valor presente de um ativo, dada uma taxa de juros $i$, em $n$ períodos, basta considerar $VPL = 0$ e substituir ([-@eq-frc]) em ([-@eq-vpl2]):
+
+    -   $R = PV\frac{i.(1+i)^n}{(1+i)^n-1}$ ou $R = \frac{PV.i}{1-(1+i)^{-n}}$
+    -   Exemplo:
+        -   Dado um valor presente de R$ 4.000,00, a uma taxa de 0,76% a.m., calcule a prestação para pagamento em 12x:
+        -   $R = \frac{4000.0,76\%}{1-(1+0,76\%)^{-12}} = \frac{30,4}{1 - 0,91315} \approx 350,00$
+        
+## Essencial de Engenharia Econômica
+
+-   Para calcular o valor presente, dada a renda, os juros e número de prestações:
+
+    -   $PV = R\frac{(1+i)^n-1}{i.(1+i)^n}$ ou $PV = \frac{R.(1-(1+i)^{-n})}{i}$
+    -   Exemplo:
+        -   Dada uma prestação de R$ 1.000 mensais, a uma taxa de juros de 0,64% a.m., calcular o valor presente, considerando n = 60
+        -   $PV = \frac{1.000.(1-(1+0,64\%)^{-60})}{0,64\%}=\frac{1.000.(1-0,6819)}{0,64\%}$
+        -   $PV \approx 49.700,00$
+
+-   O período de capitalização importa!
+
+## Essencial de Engenharia Econômica
+
+### Revisitando o exemplo 2:
+  - Dados:
+    - $I = 95.000,00$, $R = 2.000,00$, $C = 1.000$, $i=0,64\% a.m.$, $T=60$, $VF = 57.000$
+  - Solução:
+    - $FRC(0,64\%, 60) = \frac{0,0064.(1+0,0064)^{60}}{(1+0,0064)^{60}-1} \approx 0,02$
+    - $FAC(0,64\%, 60) \approx FAC(8\%, 5) = 0,6806$
+    - $VPL = -95.000 + \frac{2.000-1.000}{0,02} +  57.000\times 0,6806 = -95.000 + 50.000 + 38.800$
+    - $VPL \approx -6.200,00$
+
+## Essencial de Engenharia Econômica
+
+### Taxa interna de retorno
+
+-   Dados os valores do investimento ($I$), a Renda ($R$), o Custo ($C$) e o número de períodos ($T$), a TIR é o valor da taxa $i$ que zera o VPL na equação [-@eq-vpl]:
+
+    -   $$0 = -I  + \sum_{t=1}^T \frac{R_t - C_t}{(1+TIR)^t}$$ {#eq-tir}
+
+-   Se $TIR > TMA$: aceita-se o projeto!
+
+-   Caso contrário, rejeita-se!
+
+-   A TIR é muito utilizada nas empresas para comparar diferentes projetos
+
+## Essencial de Engenharia Econômica
+
+### Taxa interna de retorno
+
+- Exemplo:
+
+  - Construtora pode investir R$ 1.000.000,00 num terreno cujo VGV estimado 
+  é de R$ 10.000.000,00, com prazo de entrega de 5 anos
+  - Ou pode investir R$ 800.000,00 em outro terreno cujo VGV estimado é de 
+  R$ 8.000.000,00, com prazo de entrega de 4 anos
+  - Considere que as receitas sejam constantes, anualmente.
+  - Considere que o lucro sobre as receitas seja de 20%
+  - Se a TMA da construtora é de 15% a.a., qual projeto escolher?
+
+## Essencial de Engenharia Econômica
+
+### Comparação por VPL
+
+- Cálculo dos FRC:
+  - $FRC(15\%, 5) = \frac{0,15.(1+0,15)^5}{(1+0,15)^5-1} = 0,2983$
+  - $FRC(15\%, 4) = \frac{0,15.(1+0,15)^4}{(1+0,15)^4-1} = 0,3503$
+- Cálculo dos VPL:
+  - $$VPL_1 = -1.000.000 + \frac{20\% 2.000.000}{0,2983} = \frac{400.000}{0,2983} = R\$ 340.931,90$$
+  - $$VPL_2 = -800.000 + \frac{20\% 2.000.000}{0,3503} = \frac{400.000}{0,3503} = R\$ 341.878,40$$
+  - Os dois projetos são aceitáveis! Os VPL's são praticamente idênticos!
+  
+```{r}
+VPL1 <- npv(r = .15, cf = c(-1000, rep(.2*2000, 5)))
+VPL2 <- npv(r = .15, cf = c(-800, rep(.2*2000, 4)))
+# library(FinancialMath)
+# VPL1 <- NPV(cf0 = -1000, cf = rep(.2*2000, 5), times = 1:5, i = .15)
+# VPL2 <- NPV(cf0 = -800, cf = rep(.2*2000, 4), times = 1:4, i = .15)
+```
+
+
+## Comparação por VPL
+
+- Analisando os FC e os VPL, algumas pessoas podem pensar:
+  - "Os dois projetos são similares, porém no primeiro a construtora lucra por 1 ano a mais"
+  - "A construtora investe 200.000 a mais, porém fatura 25% mais e portanto lucra 400.000 a mais"!
+    - "Portanto, vale a pena investir 200.000 mais e fazer o projeto com maior VGV!"
+  
+## Comparação por TIR
+
+- Cálculos das TIR:
+    - $$TIR_1 \Rightarrow 0 = -1.000.000  + \sum_{t=1}^5 \frac{400.000}{(1+TIR_1)^5}$$
+      - $$TIR_1 = 28,65\%$$
+    - $$TIR_2 \Rightarrow 0 = -800.000  + \sum_{t=1}^4 \frac{400.000}{(1+TIR_2)^4}$$
+      - $$TIR_2 = 34,90\%$$
+      
+```{r}
+TIR1 <- irr(c(-1000, rep(.2*10000/5, 5)))
+TIR2 <- irr(c(-800, rep(.2*8000/4, 4)))
+# TIR1 <- IRR(cf0 = -1000, cf = rep(.2*2000, 5), times = 1:5)
+# TIR2 <- IRR(cf0 = -800, cf = rep(.2*2000, 4), times = 1:4)
+```
+
+    
+- Ao contrário do raciocínio falacioso do último slide, a TIR elenca o projeto 2
+como o mais rentável para a construtora!
+    
+## Essencial de Engenharia Econômica
+
+### Indicadores: rentabilidade e lucratividade
+
+- Lucratividade: 
+  - é a razão entre o lucro líquido ($L_{líquido}$) e a receita bruta ($R_{bruta}$):
+  - $$L = \frac{L_{líquido}}{R_{bruta}}$${#eq-lucratividade}
+
+- Rentabilidade: 
+  - é a razão entre o lucro líquido e o investimento ($I$):
+  - $$\text{ROI} = \frac{L_{líquido}}{I}$${#eq-rentabilidade}
+  
+## Lucratividade
+  
+:::: {.columns}
+
+::: {.column width="50%"}
+- Projeto 1: $$L_1 = \frac{L_{líquido}}{R_{bruta}} = \frac{400.000}{2.000.000} = 20\%/\text{ano}$$
+:::
+
+::: {.column width="50%"}
+- Projeto 2: $$L_2 = \frac{L_{líquido}}{R_{bruta}} = \frac{400.000}{2.000.000} = 20\%/\text{ano}$$
+:::
+
+::::
+
+
+## Rentabilidade
+
+:::: {.columns}
+
+::: {.column width="50%"}
+- Projeto 1: $$\text{ROI}_1 = \frac{VPL_1}{I_1} = \frac{341.000}{1.000.000} = 34,10\%$$
+:::
+
+::: {.column width="50%"}
+- Projeto 2: $$\text{ROI}_2 = \frac{VPL_2}{I_2}= \frac{341.000}{800.000} = 42,625\%$$
+:::
+
+::::
+
+## Lucratividade *vs.* Rentabilidade
+
+- O raciocínio é o seguinte: 
+  - o VPL é o mesmo para ambos os projetos
+  - porém, no projeto 2 o investimento é menor (e retorna mais rápido)!
+
+## Comparação por TIR
+
+- Um bom exercício para este momento é:
+  - Imagine que o Projeto 2 atrasou. 
+    - Irá apresentar o mesmo resultado (20% de R$ 8.000.000,00)
+    - Porém, agora com prazo de 5 anos
+    - Calcule a nova TIR do Projeto 2.
+    - Compare-a à TIR inicial e à TIR do primeiro projeto
+    - Faça também o cálculo do novo VPL e das rentabilidades!
+    
+```{r}
+#| eval: false
+irr(cf = c(-800, rep(.2*8000/5, 5)))
+```
+
+## Simulações de Monte Carlo
+
+- As incertezas quanto aos projetos pode ser modelada com fins de obter 
+resultados mais seguros
+
+```{r}
+#| eval: false
+CF <- function(Di = -800000, L = .20, VGV = 8*10^6, n = 4) {
+  tir <- irr(cf = c(Di, rep(L*VGV/n, n)))
+  return(tir)
+}
+CF()
+CF(n = 5)
+```
+
+```{r}
+range_L <- c(.10, .30)
+range_VGV <- c(7*10^6, 9*10^6)
+range_n <- c(3, 5)
+names(range_L) <- c("min", "max")
+names(range_VGV) <- c("min", "max")
+names(range_n) <- c("min", "max")
+```
+
+```{r}
+
+```
+
+    
+# Avaliação de Aluguéis {background-image="img/PPT_Chapter.png"}
+
+## Método da Renda
+
+- O *Método da Renda* é um dos métodos reconhecidos pela @NBR1465302 para 
+"identificar o valor de um bem".
+  - Em outras palavras, o *Método da Renda* é um método para a estimação do valor 
+  de mercado de um bem imóvel.
+
+- O *Método da Renda* consiste em utilizar a renda (aluguel) que um imóvel produz
+fins de determinar o seu valor de mercado.
+
+- Antigamente alguns autores se referiam ao *Método da Renda* também quando
+utilizado para a determinação do valor justo do aluguel dos imóveis
+  - Na atualidade, para este segundo propósito, adotou-se o termo de *Método de 
+  Remuneração do Capital*
+
+## Método da Remuneração do Capital
+
+- Na @NBR1465302 [item 11.4.2], quando utilizado o *Método da Remuneração do
+Capital* para determinação dos aluguéis:
+  - Neste caso, o aluguel é determinado em função do valor do imóvel, podendo 
+  ser empregado em casos de imóveis isolados e atípicos, para os quais a
+  utilização da comparação direta seja impraticável.
+  - Sua utilização exige a determinação da taxa de remuneração e do valor do
+  imóvel.
+  - A taxa de remuneração deve ser objeto de pesquisa específica para cada caso,
+  pois varia para cada tipo de imóvel, localização e, também, ao longo do tempo,
+  dependendo da conjuntura econômica.
+
+## Método da Remuneração do Capital
+
+-   Segundo @damato, p. 123:
+
+
+
+> Apesar de ser método de grande aplicação, alguns estudiosos já estão percebendo a inversão "causa-efeito" da premissa de que todo imóvel vale (efeito) pela sua capacidade de produzir renda (causa). Talvez o fato de se partir do "efeito" (valor do imóvel) para se obter a "causa" (renda) conduza a resultados distorcidos da realidade, a menos que nos cálculos se apliquem múltiplos fatores corretivos; para o terreno: localização, área, testada, profundidade, formato, sub ou superaproveitamento; para a construção: áreas privativa e total, grupamento, padrão, idade, estado de conservação, distribuição entre andares e dos ambientes (layout). \[…\] Na realidade se verifica que são dois mercados diferentes, o de venda e o de locação, com tendência, comportamentos e público alvo também diversos.
+
+-   Obs. Droubi:
+    -   São dois mercados diferentes!
+    -   Mas eles se equilibram!
+
+## Método da Remuneração do Capital
+
+-   É o inverso do método da renda [@damato, p. 95]!
+
+
+
+> "quando usado inversamente, para fixação de aluguéis, o método denominar-se-á da remuneração dos capitais"
+
+-   A taxa de remuneração deve ser determinada mediante pesquisa, conforme item 11.4.2 da NBR 14.653-2 [-@NBR1465302]:
+
+
+
+> A taxa de remuneração deve ser objeto de pesquisa específica para cada caso, pois varia para cada tipo de imóvel, localização e, também ao longo do tempo, dependendo da conjuntura econômica.
+
+## Método da Remuneração do Capital {.smaller}
+
+-   Deve-se levar em conta:
+
+    -   Taxa de Vacância
+    -   Taxas de administração
+    -   Impostos
+    -   Compensação pela falta de liquidez
+    -   Manutenção e Depreciação
+    -   Valorização
+
+-   Um método é levar em conta estas variáveis na taxa de desconto:
+
+    | Tipo             | Terreno (% a.a.) | Benfeitorias (%a.a.) |
+    |------------------|------------------|----------------------|
+    | Taxa básica      | 8,00%            | 8,00%                |
+    | Não-liquidez     | 1,50%            | 1,50%                |
+    | Depreciação      | \-               | 1,50%                |
+    | Taxa de vacância | \-               | 1,00%                |
+    | Valorização      | -1,50%           | \-                   |
+    | TOTAL            | 8,00%            | 12,50%               |
+
+    : Fonte: Composição de taxas de desconto. Fonte: @damato, p. 86.
+
+## Taxa composta
+
+-   Uma vez obtidas as taxas de desconto para o terreno e para as benfeitorias, 
+pode-se calcular a **taxa composta**:
+
+    -   $i=\frac{V_T.i_T+V_B.i_B}{V_T + V_B}$
+
+-   Com a taxa composta, os valores do terreno e do capital (benfeitorias), pode
+ser feito o cálculo do valor do aluguel.
+
+## Taxa composta
+
+- Exemplo (adaptado de @damato, p. 87):
+  - $V_T = 250.000,00$
+  - $V_B = 450.000,00$
+  - $V_I = 795.000,00$ (Fator de Comercialização $\approx$ 14%)
+  - $i = \frac{250.000.0,08+450.000.0,125}{250.000 + 450.000} = \frac{20.000 + 56.250}{700.000} = 10,89% (a.a.)$
+    - Taxa ao mês: $i_{mensal} = (1+i_{anual})^{1/12} - 1 = 0,865\%$
+    - $Al = 795.000,00.0,865\% = \text{R\$ }6.876,75/\text{mês}$
+
+## Método da Renda com aluguel líquido
+
+- Segundo @Malpezzi2002TheRO:
+  - $$V_{imovel} = \sum_{t=0}^{T}\frac{E(R_t-C_t)}{(1+i)^t} = \sum_{t=0}^{T}\frac{E(R_l)}{(1+i)^t} \approx \frac{R_l}{i}$$
+- Obs.: A valorização ($g$) pode ser levada em conta subtraindo-a da taxa de desconto [@Malpezzi2002TheRO]:
+  - $$V_{imovel} = \frac{R_l}{i-g}$$
+  - $i-g$ é chamada de taxa de capitalização, ou $c$ (*cap rate*)
+  - $$V_{imovel} = \frac{R_l}{c}$$
+
+## Método da Renda com aluguel líquido
+
+- Segundo @damato, p. 100, deve-se deduzir, em média, 30% do aluguel bruto!
+    - $$V_{imóvel} = \frac{Al}{i} = \frac{12.0,7.3000}{6\%}=\,\text{ R\$ } 420.000,00$$
+
+- Estimando-se uma taxa de valorização de 2% a.a.:
+  - $$V_{imóvel} = \frac{Al}{i} = \frac{12.0,7.3000}{6\%-2\%}=\,\text{ R\$ } 630.000,00$$
+
+-   Pequenos ajustes fazem grande diferença no VP!
+
+## O investimento em imóveis
+
+-   Exemplo:
+    - Dado que um apartamento está anunciado em R$ 400.000,00
+    - Que a sua (investidor) TMA é igual 10% a.a.
+    - Que o aluguel do imóvel é R$ 3.000,00/mês
+    - Que a expectativa é que o aluguel se reajuste a uma taxa de 1,5% a.a.
+    - Que os custos (inclusive taxa de vacância) são da ordem de 30% do valor 
+    do aluguel
+    - Que você (investidor) considera um prazo de 30 anos para amortizar o
+    investimento
+    - Quanto você pode pagar pelo apartamento?
+    
+## O investimento em imóveis
+
+- Solução:
+    - $$FRC(8,5\%, 30) = \frac{8,5\%.(1+8,5\%)^{30}}{(1+8,5\%)^{30}-1} = 0,09305$$
+    - $$VPL = -400.000 + \frac{12.(3000-900)}{9,305\%}$$
+    - $$VPL = -400.000 + 270.822,10$$
+    - $$VPL = -129.177,90$$
+    - **R.**: Não se pode pagar mais do que R$ 270.000,00 pelo imóvel
+
+## O investimento em imóveis
+
+### A casa própria
+
+-   Suponha que:
+    -   Uma casa está anunciada por R$ 500.000,00
+    -   Você pode financiá-la, mediante entrada de 20% (R$ 100.000)
+    -   Após adquirí-la, você pagará ao banco uma parcela de R$ 2.000,00 mensais por 30 anos
+    -   O aluguel da casa é R$ 3.000,00 mensais
+    -   A sua TMA é de 10% a.a.
+    -   Você compra a casa?
+    -   Considere que não há valor residual e despreze os custos de manutenção da casa, inflação, etc.!
+    
+## O investimento em imóveis
+
+### A casa própria
+
+-   Solução:
+    - $$FRC(10\%, 30) = \frac{10\%.(1+10\%)^{30}}{(1+10\%)^{30}-1} = 10,61\%$$
+    - $$VPL = -100.000 + \frac{12.(3000-2000)}{10,61\%}$$
+    - $$VPL = -100.000 + \frac{12.000}{10,61\%}$$
+    - $$VPL = -100.000 + 113.100,80$$
+    - $$VPL = 13.100,80$$
+
+## O investimento em imóveis
+
+### A casa própria (2)
+
+- Suponha que:
+  - Um terreno está anunciado por R$ 100.000,00
+  - Você quer construir uma casa com orçamento de R$ 400.000,00
+  - Você pode fazer ATC, mediante entrada de 20% (R$ 100.000)
+  - Você pagará ao banco inicialmente uma parcela de R$ 5.000,00 mensais
+  - Porém, ao longo de 30 anos esta parcela será reduzida a uma taxa de 2,5% a.a.
+  - O aluguel de uma casa similar é R$ 4.000,00 mensais
+  - Porém estima-se que este aumentará a uma taxa de 2,5% a.a.
+  - A sua TMA é de 10% a.a.
+  - Você estima uma valor residual, ao final de 30 anos, de 20% para o imóvel.
+  
+## O investimento em imóveis
+
+### A casa própria (2)
+
+- Informações:
+    - Os terrenos não costumam ser depreciados, nem legalmente, nem do ponto de 
+    vista econômico, pois $C - L = 0$, em geral, isto é, o seu valor se mantém 
+    constante ou até aumenta [@Machline, p. 58].
+- Você compra a casa?
+- Despreze os custos de manutenção e outras taxas!
+
+## O investimento em imóveis
+
+### A casa própria (2)
+
+-   Solução:
+    -   $$FRC_R = FRC(10\% - 2,5\%, 30) = \frac{7,5\%.(1+7,5\%)^{30}}{(1+7,5\%)^{30}-1} = 0,08467 = 8,47\%$$
+    -   $$FRC_C = FRC(10\% + 2,5\%, 30) = \frac{12,5\%.(1+12,5\%)^{30}}{(1+12,5\%)^{30}-1} = 0,1288 = 12,88\%$$
+    -   $$FCA(10\%, 30) = \frac{1}{(1+10\%)^{30}} = 0,0573 = 5,73\%$$
+    -   $$VPL = - 100.000 +  \frac{12.(4.000)}{8,47\%} + \frac{12.(-5.000)}{12,88\%}  + 20\%.500.000.5,73\%$$
+    -   $$VPL = 100.000,00 + \frac{48.000}{8,47\%} + \frac{-60.000}{12,88\%} + 100.000 \cdot 5,73\%$$
+    -   $$VPL = -100.000 + 566.706 - 465.838,50 + 5.730$$
+    -   $$VPL \approx 6.600,00$$
+
+## O investimento em imóveis
+
+### Levando em conta a inflação
+
+- Segundo @Machline [p. 73]:
+  - $$i = \frac{e-d}{1+d}$$
+    - $i$ é a taxa real de juros
+    - $e$ é a taxa aparente de juros
+    - $d$ é a taxa de inflação
+    
+## O investimento em imóveis
+
+### Levando em conta a inflação  
+  
+- Exemplo [@Machline, p. 78]:
+  - Aquisição de um terreno: R$ 5.000.000,00 (1960)
+  - Venda do terreno: R$ 45.000.000,00 (1964)
+  - Dado que a taxa de inflação foi $d = 50\% \text{ a.a.}$, qual o retorno real?
+  - Solução:
+    - Taxa aparente: $e = (45.000/5.000)^{1/4}-1 = 73,2\% \text{ a.a.}$
+    - Taxa real: 
+      - $$i = \frac{0,732 - 0,50}{1 + 0,50} = \frac{0,232}{1,50} = 15,5\% \text{ a.a.}$$
+
+## O investimento em imóveis
+
+-   Deve-se levar em conta que cada pequeno ajuste, seja na taxa, seja na renda esperada, leva a grandes diferenças no valor do imóvel!
+    -   Isto é esperado, porque o fluxo de caixa é muito extenso!
+-   Se a sensibilidade é alta, o que isso significa?
+    -   Que o risco do investimento é alto!
+
+## Aparte: Administração de carteiras
+
+-   No mercado de capitais existe um almoço grátis: a diversificação!
+
+-   Sejam dois ativos, A e B:
+
+    -   Ambos tem preço de aquisição, na data 0, igual a 100;
+    -   O investidor adquire R$ 500.000,00 em ativos, sendo 50% do ativo A e 50% do ativo B
+    -   No ano 1, o ativo A valoriza 50%, enquanto o ativo B desvaloriza 50%
+    -   Ao final do primeiro ano, o investidor faz o rebalanceamento da carteira
+    -   No ano 2, o ativo A desvaloriza 33,333% e o ativo B valoriza 100%
+    -   Calcule o valor da carteira ao fim do segundo período
+
+## Aparte: Administração de carteiras (2)
+
+-   Solução:
+
+    | Período | Quant. A | Preço A | Quanto. B | Preço B | TOTAL   |
+    |---------|----------|---------|-----------|---------|---------|
+    | 0       | 2.500    | 100     | 2.500     | 100     | 500.000 |
+    | 1       | 2.500    | 150     | 2.500     | 50      | 500.000 |
+    | 2       | 1.666    | 100     | 5.000     | 100     | 666.600 |
+
+    : Rebalanceamento de carteiras de investimento.
+
+-   É possível fazer isto no mercado imobiliário?
+
+    -   Não, devido aos altos custos de transação!
+    -   Mercado imobiliário não é um mercado perfeito!
+
+# Aplicações {background-image="img/PPT_Chapter.png"}
+
+## Método da Renda {.smaller}
+
+```{r}
+library(tibble)
+library(kableExtra)
+df <- tribble(
+  ~Id, ~Area, ~Aluguel, ~PrecoVenda, ~Vacancia, ~Despesas,
+  1, 115, 580, 70000, 7, 110,
+  2, 154, 640, 80000, 8, 120,
+  3, 132, 610, 75000, 8, 125,
+  4, 105, 550, 71500, 5, 135,
+  5, 140, 625, 77000, 7, 120,
+  6, 135, 630, 71000, 8, 130,
+  7, 117, 600, 75000, 6, 130
+)
+df |>
+  kable(format = "html",  
+      linesep = "", escape = F, booktabs = T,
+      col.names = c("Id", "Área (m2)", "Aluguel (R$/mês)", 
+                              "Preco de Venda (R$)","Vacância (%)", 
+                              "Despesas Operacionais (R$)"),
+      caption = "Exemplo Método da Renda. Fonte: Apostila Prof. Norberto.",
+      format.args = list(big.mark = ".", decimal.mark = ","),
+      digits= 2)
+```
+
+-   Calcular: valor de mercado de um imóvel com aluguel de R$ 600,00.
+-   Considerar:
+    - Taxa de Vacância: 7%; Despesas Operacionais: R$ 125,00/mês
+
+## Método da Renda {.smaller}
+
+```{r}
+df <- within(df,{
+  Vacancia <- Vacancia*Aluguel/100
+  ReceitaLiquida <- Aluguel - Vacancia - Despesas
+  TaxaLiquida <- 100*ReceitaLiquida/PrecoVenda
+})
+df <- df[, c(1:6, 8, 7)]
+df |>
+  kable(format = "html",  
+      linesep = "", escape = F, booktabs = T,
+      col.names = c("Id", "Área (m2)", "Aluguel (R$/mês)", 
+                    "Preco de Venda (R$)","Vacância (R$)", 
+                    "Despesas Operacionais (R$)", "Renda Líquida (R$)",
+                    "Rentabilidade (%)"),
+      caption = "Exemplo Método da Renda",
+      format.args = list(big.mark = ".", decimal.mark = ","),
+      digits= 2)
+```
+
+- Rentabilidade média: 0,59% a.m.
+- Valor da Vacância: 7%\*600 = R$ 42,00 /mês
+- Despesas: R$ 125,00/mês
+
+- Valor do imóvel: $$V_{imovel} = \frac{R - C}{i} = \frac{600-42-125}{0,59\%}= frac{433}{0,59\%} \approx \text{R\$ }\, 73.390,00$$
+
+
+
+
+## Método da Remuneração do Capital
+
+-   Exemplo [@damato, 94]:
+
+. . . 
+
+```{r}
+df <- tribble(
+  ~PrecoVenda, ~Aluguel,
+       420000,  2000.00,
+       450000,  2800.00,
+       320000,  1400.00,
+       260000,  1250.00,
+       460000,  2700.00,
+       690000,  4000.00,
+       650000,  3800.00,
+       380000,  1240.00,
+       550000,  3300.00,
+       560000,  3500.00,
+       420000,  2500.00,
+       320000,  1800.00,
+       430000,  2500.00,
+       290000,  1300.00,
+)
+df$Id <- 1:nrow(df)
+df <- df[, c(3,1,2)]
+df |>
+  kable(format = "html", col.names = c("Id", "Preco de Venda (R$)", 
+                                       "Aluguel (R$/mês)"),
+      format.args = list(big.mark = ".", decimal.mark = ","),
+      digits= 2)
+```
+
+## Método da Remuneração do Capital
+
+-   Exemplo [@damato, 94]:
+
+. . . 
+
+```{r}
+df <- within(df, {
+  TaxaMensal <- Aluguel/PrecoVenda
+  TaxaAnual <- (1 + TaxaMensal)^12 - 1
+  TaxaMensal <- 100*TaxaMensal
+  TaxaAnual <- 100*TaxaAnual
+})
+df <- df[, c(1:3, 5, 4)]
+df |>
+  kable(format = "html", col.names = c("Id", "Preco de Venda (R$)", 
+                                       "Aluguel (R$/mês)", "Taxa Mensal (%)",
+                                       "Taxa Anual (%)"),
+      format.args = list(big.mark = ".", decimal.mark = ","),
+      digits= 2)
+```
+
+## Método da Remuneração do Capital
+
+```{r}
+#| echo: true
+t.test(df$TaxaAnual, conf.level = .80)
+```
+
+## Método da Remuneração do Capital
+
+- Para avaliar um imóvel com VM de R$ 500.000,00:
+  - $Al =500.000.6,63\%/12 \approx$ R$ 2.750,00/mês
+  - $Al =500.000.6,23\%/12 \approx$ R$ 2.600,00/mês
+  - $Al =500.000.7,03\%/12 \approx$ R$ 2.900,00/mês
+
+-   Valor locativo estimado: R$ 2.750,00 \[2.600,00; 2.900,00\]
+
+## Método da Remuneração do Capital
+
+###  Em uma perícia, faça isto:
+
+```{r}
+#| echo: true
+t.test(df$TaxaMensal, conf.level = .80)
+```
+
+## Método da Remuneração do Capital
+
+- Para avaliar um imóvel com VM de R$ 500.000,00:
+    -   $Al =500.000.0,54\% \approx$ R$ 2.700,00/mês
+    -   $Al =500.000.0,50\% \approx$ R$ 2.500,00/mês
+    -   $Al =500.000.0,57\% \approx$ R$ 2.850,00/mês
+-   Valor locativo: R$ 2.700,00 \[2.500,00; 2.800,00\]
+
+## Método da Remuneração do Capital
+
+-   Mesmos dados de @damato, p. 94:
+
+
+
+```{r}
+#| out-width: "70%"
+library(ggpmisc)
+ggplot(df, aes(x = PrecoVenda, y = Aluguel)) +
+  geom_point() +
+  stat_poly_line() +
+  stat_poly_eq(use_label(c("eq", "R2")), size = 6) +
+  geom_segment(x = 500000, xend = 500000, y=0, yend = 2840, color = "red", size=1.5) +
+  geom_segment(x = 0, xend = 500000, y = 2840, yend = 2840, 
+               color = "red", size=1.5) +
+  theme_grey(base_size = 20)
+```
+
+
+
+```{r}
+#| echo: true
+fit <- lm(Aluguel ~ PrecoVenda, data = df)
+predict(fit, newdata = list(PrecoVenda = 500000), interval = "confidence", level = .80)
+```
+
+## Método da Remuneração do Capital
+
+-   Mesmos dados, passando pela origem:
+
+
+
+```{r}
+#| out-width: "70%"
+library(ggpmisc)
+ggplot(df, aes(x = PrecoVenda, y = Aluguel)) +
+  geom_point() +
+  stat_poly_line(formula = y ~ x - 1) +
+  stat_poly_eq(use_label(c("eq", "R2")), size = 6, formula = y ~ x - 1) +
+  geom_segment(x = 500000, xend = 500000, y=0, yend = 2808, 
+               color = "red", size=1.5) +
+  geom_segment(x = 0, xend = 500000, y = 2808, yend = 2808, 
+               color = "red", size=1.5) +
+  theme_grey(base_size = 20)
+```
+
+
+
+```{r}
+#| echo: true
+fit <- lm(Aluguel ~ PrecoVenda - 1, data = df)
+predict(fit, newdata = list(PrecoVenda = 500000), interval = "confidence", level = .80)
+```
+
+## Para entender
+
+```{r}
+ggplot(df, aes(x = PrecoVenda, y = Aluguel)) +
+  geom_point() +
+  stat_poly_line(formula = y ~ x - 1) +
+  stat_poly_eq(use_label(c("eq", "R2")), size = 6, formula = y ~ x - 1) +
+  geom_segment(x = 500000, xend = 500000, y=0, yend = 2808, 
+               color = "red", size=1.5) +
+  geom_segment(x = 0, xend = 500000, y = 2808, yend = 2808, 
+               color = "red", size=1.5) +
+  geom_segment(x = 0, y = 0, xend = 260000, yend = .00562*260000, 
+               color = "blue", size=1.5, lty = 2) +
+  geom_abline(intercept = -706, slope = .00709, 
+              color = "orange", size = 1.5, lty = 3) +
+  scale_y_continuous(limits = c(0,4500)) +
+  scale_x_continuous(limits = c(0,700000)) +
+  theme_grey(base_size = 20)
+```
+
+## Para entender
+
+### Retirando um outlier
+
+```{r}
+ggplot(df[-8, ], aes(x = PrecoVenda, y = Aluguel)) +
+  geom_point() +
+  stat_poly_line(formula = y ~ x - 1) +
+  stat_poly_eq(use_label(c("eq", "R2")), size = 6, formula = y ~ x - 1) +
+  geom_segment(x = 500000, xend = 500000, y=0, yend = 2808, 
+               color = "red", size=1.5) +
+  geom_segment(x = 0, xend = 500000, y = 2808, yend = 2808, 
+               color = "red", size=1.5) +
+  geom_segment(x = 0, y = 0, xend = 260000, yend = .00562*260000, 
+               color = "blue", size=1.5, lty = 2) +
+  geom_abline(intercept = -543.7, slope = .006859, 
+              color = "orange", size = 1.5, lty = 3) +
+  scale_y_continuous(limits = c(0,4500)) +
+  scale_x_continuous(limits = c(0,700000)) +
+  theme_grey(base_size = 20)
+```
+
+## Para entender
+
+```{r}
+library(geomtextpath)
+ggplot() +
+  scale_y_continuous(limits = c(0, 4500), labels = scales::label_number_auto()) +
+  scale_x_continuous(limits = c(0, 700000), labels = scales::label_number_auto()) +
+  geom_textabline(label = "Taxa i = 0,5%a.m.", size = 5,
+                   intercept = 0, slope = 0.005, color = "orange", lty = 1) +
+  geom_textabline(label = "Taxa i = 0,75%a.m.", size = 5,
+                   intercept = 0, slope = 0.0075, color = "red", lty = 2) +
+  labs(title = "Impacto da mudança de taxa de desconto no mercado de aluguéis",
+       y = "Aluguel (R$/mês)", x = "Preço de venda (R$)") +
+  theme(axis.title.y = element_text(margin = margin(r = 15)))
+```
+
+-   Importante observar: este mercado é influenciado totalmente pelas taxas de juros. É um mercado de bens de investimento, e não um mercado de consumo!
+    -   Mas os imóveis não são apenas bens de investimento!
+
+# Economia Urbana {background-image="img/PPT_Chapter.png"}
+
+## Economia Urbana
+
+{{< video https://youtu.be/BSMJk8gSyrs?si=MUBWrkpX2oyZbbbA title="A demanda por cidades" start="0" width="600" height="450" >}}
+
+## Referências

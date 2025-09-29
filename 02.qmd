@@ -1,0 +1,900 @@
+---
+title: "Avaliação de Alugueis"
+subtitle: "Parte 02"
+author: "Luiz Fernando Palin Droubi"
+date: last-modified
+bibliography: referencias.bib
+format: 
+  pptx:
+    reference-doc: TEMPLATE_EDUFOR.pptx
+---
+
+## Aproveitamento do Terreno {.smaller}
+
+-   Uma questão que aparece em decorrência da aplicação do método evolutivo
+
+-   Não é incomum que um imóvel seja alugado enquanto ocupando um terreno de forma "improdutiva"
+
+    -   Exemplos:
+        -   Um terreno de grandes dimensões (em planta), porém ocupado apenas em parte
+        -   Um terreno edificado com um prédio comercial de 3 andares, situado em zona urbana com possibilidade de construção de até 5 andares
+
+-   Como o terreno encontra-se subaproveitado, não se pode aplicar uma taxa de remuneração sobre todo o terreno para calcular o aluguel justo ao locatário
+
+    -   Se o terreno é subaproveitado, quem deve arcar com a perda de renda decorrente deste subaproveitamento é o proprietário do terreno.
+    
+## Aproveitamento do Terreno {.smaller}
+
+-   Cuidado:
+
+    -   O aproveitamento máximo do terreno está **eventualmente** ligado ao **aproveitamento máximo legal**, *i.e.* ao que se permite construir no terreno segundo o zoneamento municipal.
+    -   O aproveitamento máximo do terreno, porém, **também** está ligado ao **aproveitamento máximo econômico** do terreno.
+
+-   Por exemplo: regiões pouco desenvolvidas, onde, até pelo baixo preço dos terrenos, não se justifica economicamente a construção de prédios de vários pavimentos, apesar de ser permitida pela legislação.
+
+## Aproveitamento do Terreno {.smaller}
+
+-   O coeficiente de aproveitamento do terreno é o coeficiente que relaciona as benfeitorias realmente existentes no terreno às benfeitorias que, caso erigidas no terreno, dariam-lhe o **máximo e melhor aproveitamento**.
+
+-   O coeficiente de aproveitamento trata, portanto, não apenas da quantidade de **área construída** no terreno, mas à **qualidade** desta área construída e a sua **idade** (conservação).
+
+## Aproveitamento do Terreno {.smaller}
+
+- Candeloro, n.d., p. 45:
+
+> Em regiões onde os terrenos são extremamente valiosos, para que a construção lhes dê um bom aproveitamento, não basta que seja grande. É necessário que seja de padrão condizente com o mercado local, pois, ao se propor a pagar uma quantia extremamente alta por um terreno, o investidor o faz pensando em nele implantar uma construção de alto padrão, ou seja, economicamente adequada ao valor do terreno. Exemplo flagrante dessa situação é o caso da Avenida Paulista, em São Paulo, onde os preços de terrenos chegam à casa dos 10 mil dólares o metro quadrado e onde a ocupação é de prédios novos e de altíssimo padrão.
+
+## Cálculo do Coeficiente de Aproveitamento
+
+-   O coeficiente de aproveitamento pode ser descrito pela fórmula a seguir (Candeloro, n.d., 19; D’Amato e Alonso 2019, p, 129):
+    -   $$C_A = \frac{A_{h-existente}}{A_{h-máxima}}$$
+-   Deve-se notar que o Coeficiente de Aproveitamento é calculado com áreas homogeneizadas, *i.e.* com áreas ponderadas conforme a escolha de pesos convenientes.
+    -   Ponderar a área edificada segundo o aproveitamento do terreno (zoneamento)
+    -   Ponderar a área edificada segundo a qualidade da área construída (CUB)
+    -   Ponderar a área edificada segundo o grau de obsolescência da edificação
+
+## Cálculo do Coeficiente de Aproveitamento {.smaller}
+
+-   Exemplo:
+    - Um terreno com 10,0m de testada e área $S = 400m^2$, situado em zona 
+    urbana com Taxa de Ocupação $\text{TO} = 0,5$ e Coeficiente de 
+    Aproveitamento $CA = 1,0$.
+    - Este terreno encontra-se em zona com valor do $m2$ $q_T = 2.000,00\, \text{R\$}/m^2$
+    - Neste terreno encontra-se edificada uma edificação comercial com 450m2 de 
+    área construída, sendo 150m2 no térreo e 300m2 nos andares superiores
+    - A edificação possui padrão construtivo médio e tem idade de aprox. 10 anos,
+    o que resulta num fator de obsolescência igual a 0,75.
+
+
+## Resolução {.smaller}
+
+- Considerar que o custo de construção equivale a 1,2 vezes o CUB do padrão 
+R-8N ($\text{R\$ }1.000,00/m^2$), *i.e.* $q_B = 1,2.\text{R-8N}$.
+- Considerar que as áreas do térreo (lojas) tem peso 3 em relação às superiores
+  - Calcular o Coeficiente de Aproveitamento do Terreno
+  - Após, calcular o valor do aluguel justo do terreno, considerando 
+  $i = 8\%$, tanto para as benfeitorias, tanto para o terreno.
+
+## Resolução {.smaller}
+
+### Cálculo do Coeficiente de Aproveitamento
+
+::::: columns
+::: {.column width="50%"}
+-   Área homogeneizada existente
+    -   Térreo (peso 3):
+        -   $A_{T-exist} = W_T.A_T = 3.150$
+        -   $A_{T-exist} = 450m^2$
+    -   Superiores (peso 1):
+        -   $A_{S-exist} = W_S.A_S = 1.300$
+        -   $A_{S-exist} = 300m^2$
+:::
+
+::: {.column width="50%"}
+-   Área homogeneizada máxima
+    -   Térreo (peso 3):
+        -   $A_{T-max} = TO.S.W_T = 0,5.400.3 = 600m^2$
+    -   Superiores (peso 1):
+        -   $A_{S-max} = (CA-TO).S.W_S = (1-0,5).400.1$
+        -   $A_{S-max} = 200m^2$
+:::
+:::::
+
+-   Coeficiente de Aproveitamento:
+    -   $CA = \frac{A_{h-existente}}{A_{h-máxima}}=\frac{750}{800}=0,9375$
+
+## Resolução {.smaller}
+
+### Cálculo do valor do capital
+
+::::: columns
+::: {.column width="50%"}
+-   Capital Terreno:
+    -   $q_T = \text{R\$ }2.000,00/m^2$
+    -   $V_T = q_T.S = 2.000.400 = 800.000$
+:::
+
+::: {.column width="50%"}
+-   Capital Benfeitoria:
+    -   $q_B = \text{R\$ }1.200,00/m^2$
+    -   $f_o = 0,75$
+    -   $V_B = f_o.q_B.A_B = 0,75.1.200.450 = 405.000$
+:::
+:::::
+
+### Método da Remuneração do Capital
+
+::::: columns
+::: {.column width="50%"}
+-   Capital Terreno:
+    -   $C_T = V_T.\text{CA} = 800.000.0,9375$
+    -   $C_T =\text{R\$ }750.000,00$
+:::
+
+::: {.column width="50%"}
+-   Capital Benfeitoria:
+    -   $C_B = V_B = \text{R\$ }405.000$
+:::
+:::::
+
+-   $$Al = \frac{(CT + CB).i}{12}={(750.000+405.000).8\%}{12}=\text{R\$}7.700,00/mês$$
+
+-   Melhor: $Al = 1.155.000∗[(1+8\%)^{1/12}−1]=\text{R\$}7.431,30/mês$
+
+## Coeficiente de Aproveitamento
+
+### Redução do Coeficiente pela idade
+
+-   Com o aumento da idade da edificação, as benfeitorias podem passar a não refletir mais o aproveitamento máximo do terreno;
+
+-   É controverso se a idade deveria influenciar no cálculo do aproveitamento para fins de locação (para fins de venda, é unânime que sim)
+
+-   Cuidado: os textos encontrados não mencionam, porém o avaliador deve observar o entorno do avaliando
+
+    -   Se no entorno, os elementos amostrais coletados possuem idade aparente similar ao do avaliando, não há qualquer razão que indique o subaproveitamento do terreno
+    -   Se, no entanto, o avaliando encontra-se em meio a diversos edifícios mais novos, é indicativo que deve ser aplicada a redução do Coeficiente pela idade
+
+## Coeficiente de Aproveitamento {.smaller}
+
+### Redução do Coeficiente pela idade
+
+-   Fórmula de Dante Guerrero [@candeloro, p. 20]:
+
+-   $CA_R = CA\left [R + (1-R).\frac{v}{V}\right ]$
+
+-   $R$: residual da construção
+
+-   $v$: idade aparente da benfeitoria
+
+-   $V$: vida útil da benfeitoria
+
+## Coeficiente de Aproveitamento {.smaller}
+
+### Redução do Coeficiente pela idade
+
+-   Fórmula de Dante Guerrero [@candeloro, p. 20]:
+-   Exemplo:
+
+    -   Mesmo caso anterior, em que $CA = 750/800 = 0,9375$, considerar vida útil igual a 50 anos e Residual igual a 20%:
+        -   $CA_R = CA\left [R + (1-R).\frac{v}{V}\right ]$
+        -   $CA = \frac{750}{800}\left [20\% + (1-20\%).\frac{10}{50}\right ] = 0,9375.(0,2+(1-0,2).10/50)$
+        -   $CA = 0,3375$
+        -   Está incorreto!
+        -   Correto seria: $CA_R = CA\left [R + (1-R).\left (1-\frac{v}{V}\right )\right ] = \frac{750}{800}\left [20\% + (1-20\%).\left(1-\frac{10}{50}\right)\right ]$ $CA = 0,9375.(0,2+0,64) = 0,7875$
+
+## Coeficiente de Aproveitamento {.smaller}
+
+### Redução do Coeficiente pela idade
+
+-   Cuidado com a aplicação de fórmulas prontas!
+
+-   Exemplo [@alonso2017, p. 4-5]:
+  - Aplica uma nova fórmula
+  - Resultado parece inconsistente!
+  
+## Coeficiente de Aproveitamento {.smaller}
+
+### Redução do Coeficiente pela idade  
+
+-   Exemplo [@alonso2017, p. 4-5]:
+
+    -   Suponhamos então que determinado terreno avaliando, com 2.304,00m2, situado em região onde a lei de uso e ocupação do solo fixa o coeficiente de aproveitamento 2 e taxa de ocupação 0,50, e que esteja ocupado por uma construção térrea com 22 anos de idade, vida útil de 60 anos e 700,00m2 de área construída total; as áreas ponderadas "existente" e "possível" são assim calculadas:
+        -   $A_{h-existente} = 700\times3,0 = 2.100,00m^2$
+        -   $A_{h-possível} = 2.304\times0,5\times3,0 +  2.304\times0,5\times2,0 + 2\times2.304\times0,5\times1,0= 8.064,00m^2$
+        -   O que seria o $CA_{básico}$?
+        -   $\text{CA}_{básico} = \frac{2.100}{8.064}=0,26$
+    
+## Coeficiente de Aproveitamento {.smaller}
+
+### Redução do Coeficiente pela idade  
+
+- Exemplo [@alonso2017, p. 4-5]:    
+  - $\text{CA}_{básico} = \frac{2.100}{8.064}=0,26$  
+  - Aplicou-se $\text{CA}_{Ap} = 1 – [((E – e)/E).(0,20 + (0,80.(V – v)/V))]$
+  - E chegou-se a: $\text{CA}_{Ap} = 1 – [((8.064 – 2.100)/8.064) (0,20 + (0,80.(60-22)/60))] = 1 – (0,7396 . 0,7067) = 0,477$
+  - O coeficiente de aproveitamento aumentou após a consideração da idade!!!
+   
+## Coeficiente de Aproveitamento {.smaller}
+
+### Redução do Coeficiente pela idade  
+
+- Exemplo [@alonso2017, p. 4-5]:
+  - Onde está o erro?
+    - Pode-se perceber que o erro está no componente básico da fórmula!
+    - Correto seria: $C_{Ap} = 1 – [ (e/E) . ( 0,20 + ( 0,80 . (V – v)/V))] = 1 – (0,26 . 0,7067) = 0,184$
+
+## Coeficiente de Aproveitamento {.smaller}
+
+### Redução do Coeficiente pela idade e padrão
+
+> De fato, como explicar a ocorrência de demolição de imóveis antes de atingirem sua vida útil? Geralmente isto acontece quando ocorre alteração ponderável do padrão em determinada região tornando as construções ali existentes obsoletas funcionalmente [@alonso2017, p. 5].
+
+> Então, aos dois fatores endógenos (área e idade) deve ser acrescentado o padrão regional, de natureza exógena, portanto de caráter somatório [@alonso2017, p. 6].
+
+-   $$C_{Ap} = 1 – (1 - \frac{e}{E}).(0,20 + (0,80.(1 - v/V))) + (1 - p/P)$$
+
+## Coeficiente de Aproveitamento {.smaller}
+
+### Redução do Coeficiente pela idade e padrão
+
+-   Exemplo [@alonso2017, p. 6-8]:
+
+    -   Mesmos dados do anterior
+    -   Porém, agora considerando que o padrão da construção existente é de 1,470xR-8N, enquanto no entorno prevalece um padrão mais alto, de 1,926xR-8N
+
+## Coeficiente de Aproveitamento {.smaller}
+
+### Redução do Coeficiente pela idade e padrão
+
+-   Solução [@alonso2017, p. 8]:
+    -   $C_{Ap} = 0,714$
+    -   Não faz o menor sentido!
+-   Solução lógica:
+    -   $C_{Ap} = 1 – [ (e/E) . (0,20 + (0,80.(V – v)/V)).(p/P)] = 1 – (0,26.0,7067.0.763) = 0,184$
+-   Não faz sentido, ao nosso ver, que a variável padrão seja considerada na forma
+aditiva, enquanto as outras são consideradas na forma multiplicativa.
+
+# Hipótese de Harper
+
+## Hipótese de Harper
+
+- A hipótese de Harper visa corrigir a área da loja para diferentes profundidades
+
+- A hipótese de Harper considera que o preço médio do metro quadrado varia de
+forma parabólica com relação à profundidade padrão para o local [@damato, p. 168]
+
+- A hipótese implica que:
+  - A primeira quarta parte da loja (da frente à via de acesso), corresponde à
+  50% do valor da loja;
+  - A segunda quarta parte equivale a 21%;
+  - A terceira quarta parte equivale a 16%;
+  - E a quarta quarta parte equivale a 13%.
+  
+- A hipótese de Harper não corrige o efeito de Frente da loja
+  
+## Hipótese de Harper
+
+
+
+
+
+::::: columns
+::: {.column width="50%"}
+  
+$$V_l = V_u(\sqrt{aSf_p}+A_p)$$ 
+
+
+:::
+
+::: {.column width="50%"}
+
+
+- $a$: frente da loja 
+- $S$: área da loja 
+- $f_p$: fundo padrão (de 15 a 20m) 
+- $A_P$: demais áreas
+
+
+:::
+
+::::
+
+
+
+
+```{r}
+#| out-width: "80%"
+library(tibble)
+df <- tribble(
+  ~Id, ~Frente, ~Prof, ~Vl,
+    1,       8,     8, 450, 
+    2,       8,    10, 450,
+    3,       8,    12, 500,
+    4,       8,    14, 500,
+    5,       8,    16, 500,
+    6,       8,    18, 550,
+    7,       8,    20, 600,
+    8,       8,    22, 700,
+    9,       8,    24, 750,
+   10,       8,    26, 750,
+   11,       8,    28, 785,
+   12,       8,    30, 850
+)
+FundoPad <- 20
+df <- within(df,{
+  Area <- Frente*Prof
+  VU <- Vl/Area
+  Harper <- Area/sqrt(Frente*Area*FundoPad)
+  VUhom <- VU*Harper
+})
+library(ggplot2)
+ggplot(df, aes(x = Prof, y = 1/Harper)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = 1, lty = "dotted") +
+  geom_vline(xintercept = 20, lty = "dotted") +
+  labs(title = "Hipótese de Harper para lojas",
+       x = "Profundidade (m)", y = "Valor Unitário (R$/m2)",
+       caption = "Com fundo padrão igual a 20m. VU para loja-padrão igual R$ 1,0/m2")
+```
+  
+## Hipótese de Harper {.smaller}
+
+### Exemplo [Adaptado de @damato, p. 168]:
+
+::::: columns
+::: {.column width="50%"}
+
+- Seja a amostra:
+
+```{r}
+library(knitr)
+kable(df[, c(1, 2, 3, 4)], format = "html",
+      format.args = list(big.mark = ".", decimal.mark = ","),
+      digits = 2
+      #, caption = "Hipótese de Harper aplicada a lojas"
+      ) 
+```
+
+:::
+
+::: {.column width="50%"}
+
+- Avaliar o aluguel de uma loja com 8x15$m^2$
+
+- $$VU_{hom} = \frac{VU.S}{\sqrt{a.S.f_p.}}$$
+
+- $$VU_{hom} = \frac{VU.S}{\sqrt{8.S.20}}$$
+
+:::
+
+::::
+
+## Hipótese de Harper {.smaller}
+
+### Solução:
+
+::::: columns
+::: {.column width="60%"}
+
+- Homogeneização:
+
+```{r}
+library(appraiseR)
+library(knitr)
+kable(df[, c(1, 2, 3, 4, 8, 7, 6, 5)], format = "html",
+      format.args = list(big.mark = ".", decimal.mark = ","),
+      digits = 2
+      #, caption = "Hipótese de Harper aplicada a lojas"
+      ) 
+```
+
+:::
+
+::: {.column width="40%"}
+
+- $VU_{hom} =$`r Reais(mean(df$VUhom))`$/m^2$
+
+- Avaliar o aluguel de uma loja com $8\times17,5 = 140m^2$:
+
+- Homogeneização do avaliando: $S_{hom} = \sqrt{8.140.20} \approx 150,0 m^2$
+
+- Valor Locatício: $Vl = S_{hom}.VU_{hom} = 150\times4,01$
+
+- Valor Locatício: $Vl \approx \text{R\$ }600,00$
+
+:::
+
+::::
+
+## Hipótese de Harper {.smaller}
+
+## Exemplo 2:
+
+- Com os dados do exemplo anterior, calcular o aluguel de uma loja com 8x22,5m2,
+contando com mais 50$m^2$ de sobreloja (mezzanino)
+
+- Solução:
+  - $S_{hom} = \sqrt{8.180.20} + 50/2$
+  - $S_{hom} = 169,70 + 25 = 194,70m^2$
+  - $Vl = S_{hom}.VU_{hom} = 194,70\times4,01$
+  - $Vl \approx \text{R\$ }780,75$ 
+
+# Cota parte
+
+## Cota parte
+
+- Em muitos casos a avaliação desejada é de uma unidade do edifício e não do seu
+todo
+- Assim surge o problema, nos casos de aplicação do método evolutivo, de saber
+qual cota-parte do terreno cabe àquela unidade que se deseja avaliar.
+- Matematicamente:
+  - $CP = \frac{A_{hu}}{A_{ht}}; \qquad CT_{un} = CT.CP$
+    - CP: Cota-Parte
+    - CT: Capital Terreno (Total)
+    - CTun: Capital Terreno correspondente à unidade em análise
+    - Ahu: área homogeneizada da unidade
+    - Aht: área homogeneizada total
+
+## Exemplo
+
+- Cálcular a Cota Parte do Térreo num edifício composto de um terreno de 400m2,
+com área construída de 200m2 no térreo e superiores de 400m2.
+- Considerar pesos 3:1
+
+- Solução:
+  - $CP = \frac{A_{hu}}{A_{ht}} = \frac{A_{Terreo}.p_{Terreo}}{A_{Terreo}.p_{Terreo} + A_{Superiores}.p_{Superiores}}$
+  - $CP = \frac{200.3}{200.3+400.1} = \frac{600}{1.000} = 60\%$
+  
+## Cálculo do aluguel de uma cota parte
+
+- Para o cômputo do aluguel de uma única unidade, pode-se calcular a Cota Parte
+(CP) da unidade e aplicar ao valor total do Capital Terreno.
+- No entanto, se o objetivo for calcular apenas o valor do aluguel da unidade,
+pode-se calcular o Capital terreno referente à unidade (CTun) diretamente 
+através da fórmula (Candeloro, p.63):
+
+
+
+$$CT_{un} = q_t.\frac{A_{hu}}{TO.p_{Térreo} + (CA_{básico}-TO).p_{Superiores}}$$
+
+- qt: Unitário do Terreno
+- TO: Taxa de Ocupação do Terreno
+- CAbásico: Coeficiente de Aproveitamento Básico do Terreno
+
+## Exemplo
+
+- Loja, com 200m2 no térreo e 100m2 no superior. O valor unitário do terreno é 
+de qt = 1.000,00 R$/m2, porém sua área total é desconhecida, assim como as áreas
+construídas das outras áreas. Considerar TO = 0,8, CA = 3,5 e pesos 5:1
+
+- Solução:
+  - $CT_{un} = q_t.\frac{A_{hu}}{TO.p_{Térreo} + (CA_{básico}-TO).p_{Superiores}}$
+  - $CT_{un} = 1.000,00.\frac{200.5+100.1}{0,8.5,0 + (3,5-0,8).1,0}$
+  - $CT_{un} = 164.179,10$
+
+## Exercício {.smaller}
+
+- Imaginem que o escritório de Avaliações e Perícias em que você trabalha foi 
+contratado por um potencial comprador de um edifício localizado na  região 
+central da cidade para efetuar a avaliação do aluguel de diversas lojas e 
+escritórios neste edifício;
+- O edifício é constituído de Térreo + 2 andares, cada um com 150m2;
+- O proprietário pretende ocupar com seu escritório pouco mais da metade da área 
+do 2º pavimento (90 m2) e locar o restante;
+
+## Exercício {.smaller}
+
+- O proprietário informou que algumas pessoas já manifestaram interesse em locar 
+espaços no seu prédio
+  - 1 interessado em instalar uma loja (térreo) com 90 m2;
+  - 1 interessado em uma loja (térreo) com 60 m2;
+  - 1 interessado em uma laje corporativa de 150 m2 para sua empresa (1º pavimento);
+  - 1 interessado na metade restante do 2º pavimento (60 m2);
+- O potencial proprietário ainda deseja saber qual o valor do aluguel da área que ele 
+próprio irá ocupar no 2º pavimento (90 m2), para fins de calcular o VPL da 
+compra do edifício (aluguel implícito).
+
+## Exercício
+
+- O diretor de Avaliações resolveu pulverizar o trabalho entre diversos 
+avaliadores;
+- No entanto, para que o resultado final seja um trabalho uniforme, o Diretor 
+estabeleu os critérios que cada avaliador deverá considerar nas suas avaliações. 
+- Os critérios estabelecidos pelo Diretor, assim como os dados por ele 
+disponibilizados para os avaliadores encontram-se nos próximos slides.
+- Para uma melhor apresentação do trabalho, o Diretor solicitou que fosse 
+utilizado o método da Cota Parte, evitando assim que o laudo final fique repleto
+de cálculos repetitivos.
+
+## Exercício
+
+:::: {.columns}
+
+::: {.column width="55%"}
+- Dados do Terreno:
+  - Área: 400m2
+  - qt = 2.000,00 R$/m2
+  - CA básico: 1
+  - TO: 0,5
+  - Pesos: 3:1 (térreo:superiores)
+  - Taxa de renda: 8% a.a.
+- Considerar a idade no cálculo do coeficiente de aproveitamento, através da 
+seguinte expressão:
+  - $CA = \frac{A_{hu}}{A_{hexist}}.\left (0,2+0,8\frac{V-v}{V}\right )$
+:::
+
+::: {.column width="45%"}
+- Dados da Benfeitoria:
+  - Idade aparente: 15 anos
+  - Vida útil: 60 anos
+  - Taxa de renda: 12% a.a.
+  - qb = 2.000,00 R$/m2 (x 1,2)
+- Considerar a depreciação pelo método da linha reta, com valor residual igual a
+20%.
+- Considerar o Fator de Comercialização igual a 1,10, tanto para o Capital 
+Terreno, quanto para o Capital Benfeitoria!
+:::
+
+::::
+
+## Exercício
+
+- Unidade 1: Loja (Térreo) com 90m2;
+- Unidade 2: Loja (Térreo) com 60m2;
+- Unidade 3: Laje corporativa (1º andar), com 150 m2;
+- Unidade 4: Sala Comercial (2º andar), com 60 m2;
+- Unidade 5: Sala Comercial (2º andar), com 90 m2;
+
+- DICAS: 
+  - Para uma melhor apresentação, resolva pela fórmula da Cota-Parte;
+  - Elabore os cálculos em uma planilha eletrônica antes de escrevê-los no editor de textos;
+  - Para verificação pode ser feito o cálculo do aluguel de cada andar em separado e depois aplicar a proporcionalidade entre a área do andar e a da unidade.
+
+
+
+# Atualização de Aluguéis
+
+## Atualização de Aluguéis
+
+- A atualização de aluguéis é utilizada na aplicação do Método Comparativo de
+Dados de Mercado
+
+-   A existência de poucos dados de mercado contemporâneos exige que seja feita 
+a comparação de dados de aluguéis contratados em perídos anteriores
+
+-   Exemplo: calcular o aluguel vigente em maio/2008 [@damato, 75]:
+
+. . .
+
+```{r}
+library(tibble)
+library(knitr)
+df <- tribble(
+  ~Id,       ~Inicio, ~Prazo, ~Aluguel, ~Reajuste, ~Indice,
+    1,  "01/03/2014",   5*12,     1400,   "Anual", "IGP-M",
+    2,  "12/06/2015",   5*12,     1350,   "Anual", "IGP-M",
+    3,  "17/08/2015",   4*12,     1200,   "Anual", "IGP-M",
+    4,  "12/09/2015",   4*12,     1164,   "Anual", "IGP-M"
+)
+kable(df)
+```
+
+## Atualização de Aluguéis {.smaller}
+
+- **Luvas**: luvas são a cobrança de uma certa importância no início da locação
+(Candeloro, n.d., 70)
+  - Pela atual legislação, as luvas só podem ser cobradas no início da locação, 
+  porém não na renovação;
+  - Para o tratamento equânime dos dados de aluguéis com ou sem luvas, estas,
+  quando existentes, devem ser diluídas e acrescentadas ao valor mensal do 
+  aluguel;
+    - É necessário, para isto, aplicação de juros e correção monetária;
+  
+## Atualização de Aluguéis {.smaller}
+
+- Exemplo [@damato, 169-170]:
+  - Aluguel com contrato de 5 anos (60 meses).
+    - Valor locatício mensal: R$ 2.000,00
+    - Luvas: R$ 50.000
+    - Selic: 9,25% a.a. (0,74% a.m.)
+    - Correção monetária: 1,37% a.a. (0,114% a.m.)
+- Solução:
+  - Taxa efetiva: $(1+0,0074).(1+0,00114)-1=0,855\%$
+  - Fator de recuperação do capital: $FRC(0,855\%, 60) = 0,02137$
+  - Aluguel: $$Al = 2.000 + 50.000\times0,02137 = 3.067,00/\text{mês}$$
+
+## Atualização de Aluguéis {.smaller}
+
+- Por que sou contrário?
+  -   Equilíbrio dos mercados imobiliário e de ativos
+  -   Quando o primeiro contrato foi firmado, em março de 2014, a atividade econômica ainda estava acelerada (desemprego baixo, renda alta)
+  -   Em 2015, a Atividade Econômica já havia caído bruscamente, o que afeta o mercado de aluguéis.
+
+. . .
+
+```{r}
+#| out-width: "75%"
+knitr::include_graphics("./img/PIB.png")
+```
+
+# Equilíbrio dos Mercados
+
+## Choque de demanda
+
+```{r}
+#| label: choqueDemanda
+#| fig-cap: "Efeito de um choque de demanda (atividade econômica). Fonte: @diPasquale [apud @ADAMS2010]"
+demand_property <- Hmisc::bezier(c(1, 1.5, 7), c(7, 3, 1)) %>%
+  as_tibble()
+
+demand_property_1 <- Hmisc::bezier(c(3, 3.5, 9), c(9, 3.5, 3)) %>%
+  as_tibble()
+
+
+plot_labels <- tibble(label = expression("D[1]", "D[2]"),
+                      x = c(1, 3.5),
+                      y = c(7.5, 9.5))
+axis_labels <- tibble(label = expression("Aluguéis", "Estoque", 
+                                         "Preço dos \n Imóveis", "Construção"),
+                      x = c(-1.5, 9, -8.5, 2),
+                      y = c(10, .5, 0, -10))
+
+Mercados <- tibble(
+  label = expression("Mercado de Bens: \n Determinação dos \nPreços",
+                     "Mercado de Bens: \n Determinação da \nConstrução",
+                     "Mercado Imobiliário: \n Determinação dos \nAluguéis",
+                     "Mercado Imobiliário: \n Determinação do \nEstoque Residencial"), 
+  x = c(-7.5, -7.5, 7.5, 7.5), y = c(8, -8, 8, -8)) 
+Romans <- tibble(label = c("I", "II", "III", "IV"), 
+                 x = c(8, -8, -8, 8),
+                 y = c(4.5, 4.5, -4.5, -4.5))
+library(ggplot2)
+p1 <- ggplot(mapping = aes(x = x, y = y)) + 
+  # geom_path(data = supply, color = "#0073D9", size = 1) + 
+  geom_path(data = demand_property, color = "#FF4036", size = 1) +
+  geom_path(data = demand_property_1, color = "#FF4036", size = 1) +
+  annotate("segment", x = 1.25, xend = 3, y = 6, yend = 7.75, 
+           arrow = arrow(length = unit(.5, "lines")), 
+           size = 1, colour = "grey50") + 
+  geom_hline(aes(yintercept = 0)) + 
+  # geom_abline(slope = -1, size = 1) +
+  geom_segment(aes(x = -7, y = 7, xend = 7, yend = -7), size = 1) +
+  geom_vline(aes(xintercept = 0)) +
+  geom_segment(aes(x = -7.5, y = -7.0, xend = -.75, yend = 0), size = 1) +
+  geom_segment(aes(x = 3, y = 3.25, xend = -3.5, yend = 3.25), lty = "dotted") +
+  geom_segment(aes(x = -3.5, y = 3.25, xend = -3.5, yend = -3), lty = "dotted") +
+  geom_segment(aes(x = -3.5, y = -3, xend = 3, yend = -3), lty = "dotted") +
+  geom_segment(aes(x = 3, y = -3, xend = 3, yend = 3.25), lty = "dotted") +
+  geom_segment(aes(x = 4.5, y = 5, xend = -5.25, yend = 5), lty = "dashed") +
+  geom_segment(aes(x = -5.25, y = 5, xend = -5.25, yend = -4.5), lty = "dashed") +
+  geom_segment(aes(x = -5.25, y = -4.5, xend = 4.5, yend = -4.5), lty = "dashed") +
+  geom_segment(aes(x = 4.5, y = -4.5, xend = 4.5, yend = 5), lty = "dashed") +
+  geom_text(data = plot_labels, aes(x = x, y = y, label = label), 
+            parse = TRUE)  +
+  geom_text(data = axis_labels, aes(x = x, y = y, label = label),
+            size = 4.5)  +
+  geom_text(data = Mercados, aes(x = x, y = y, label = label), 
+            size = 3.5) +
+  geom_text(data = Romans, aes(x = x, y = y, label = label), 
+            size = 4, fontface = "bold") +
+  coord_equal() +
+  labs(x = NULL, y = NULL, 
+       title = "Choque de Demanda",
+       caption = "Elaborado pelo Eng.º Luiz F. P. Droubi. Adaptado de DiPasquale e Wheaton (1996 apud Adams e Füss 2010)") +
+  theme_classic() +
+  theme(axis.line=element_blank(), 
+        axis.title.y = element_text(angle = 0, hjust = .9)) +
+  scale_x_continuous(expand = c(.025, .025), breaks = NULL, limits = c(-10, 10)) +
+  scale_y_continuous(expand = c(.025, .025), breaks = NULL, limits = c(-10, 10))
+p1
+```
+
+## Efeito de um aumento da taxa de juros de longo prazo
+
+```{r}
+#| label: choqueJuros
+#| fig-cap: "Efeito de um aumento de juros de longo prazo. Fonte: @diPasquale [apud @ADAMS2010]"
+demand_property <- Hmisc::bezier(c(2, 3.5, 10), c(10, 3.5, 1)) %>%
+  as_tibble()
+
+plot_label <- tibble(label = "D", x = 2.75, y = 9.5)
+
+p2 <- ggplot(mapping = aes(x = x, y = y)) + 
+  # geom_path(data = supply, color = "#0073D9", size = 1) + 
+  # geom_path(data = demand_property, color = "#FF4036", size = 1) +
+  geom_path(data = demand_property, color = "#FF4036", size = 1) +
+  annotate("segment", x = -7.5, xend = -6, y = 4, yend = 6, 
+           arrow = arrow(length = unit(.5, "lines")), 
+           size = 1, colour = "grey50") + 
+  geom_hline(aes(yintercept = 0)) + 
+  # geom_abline(slope = -1, size = 1) +
+  geom_segment(aes(x = -6, y = 6, xend = 0, yend = 0), size = 1, lty = "dotted") +
+  geom_segment(aes(x = -7.5, y = 4, xend = 0, yend = 0), size = 1) +
+  geom_segment(aes(x = 0, y = 0, xend = 7, yend = -7), size = 1) +
+  geom_vline(aes(xintercept = 0)) +
+  geom_segment(aes(x = -7.5, y = -7.0, xend = -.75, yend = 0), size = 1) +
+  geom_segment(aes(x = 5.75, y = 3.25, xend = -6, yend = 3.25), lty = "dotted") +
+  geom_segment(aes(x = -6, y = 3.25, xend = -6, yend = -5.5), lty = "dotted") +
+  geom_segment(aes(x = -6, y = -5.5, xend = 5.75, yend = -5.5), lty = "dotted") +
+  geom_segment(aes(x = 5.75, y = -5.5, xend = 5.75, yend = 3.25), lty = "dotted") +
+  geom_segment(aes(x = 4.5, y = 5, xend = -5.25, yend = 5), lty = "dashed") +
+  geom_segment(aes(x = -5.25, y = 5, xend = -5.25, yend = -4.5), lty = "dashed") +
+  geom_segment(aes(x = -5.25, y = -4.5, xend = 4.5, yend = -4.5), lty = "dashed") +
+  geom_segment(aes(x = 4.5, y = -4.5, xend = 4.5, yend = 5), lty = "dashed") +
+  geom_text(data = plot_label, aes(x = x, y = y, label = label), 
+            parse = TRUE)  +
+  geom_text(data = axis_labels, aes(x = x, y = y, label = label),
+            size = 4.5)  +
+  geom_text(data = Mercados, aes(x = x, y = y, label = label), 
+            size = 3.5) +
+  geom_text(data = Romans, aes(x = x, y = y, label = label), 
+            size = 4, fontface = "bold") +
+  coord_equal() +
+  labs(x = NULL, y = NULL, 
+       title = "Choque de Juros",
+       caption = "Elaborado pelo Eng.º Luiz F. P. Droubi. Adaptado de DiPasquale e Wheaton (1996 apud Adams e Füss 2010)") +
+  theme_classic() +
+  theme(axis.line=element_blank(), 
+        axis.title.y = element_text(angle = 0, hjust = .9)) +
+  scale_x_continuous(expand = c(.025, .025), breaks = NULL, limits = c(-10, 10)) +
+  scale_y_continuous(expand = c(.025, .025), breaks = NULL, limits = c(-10, 10))
+p2
+```
+
+## Efeito do aumento de custos de construção
+
+```{r}
+#| label: choqueCustos
+#| fig-cap:  "Efeito de um aumento de custos de construção. Fonte: @diPasquale [apud @ADAMS2010]"
+demand_property <- Hmisc::bezier(c(1, 3.75, 13.5), c(8, 3.75, 1.5)) %>%
+  as_tibble()
+
+plot_label <- tibble(label = "D", x = 2.75, y = 9.5)
+
+p3 <- ggplot(mapping = aes(x = x, y = y)) + 
+  # geom_path(data = supply, color = "#0073D9", size = 1) + 
+  # geom_path(data = demand_property, color = "#FF4036", size = 1) +
+  geom_path(data = demand_property, color = "#FF4036", size = 1) +
+  annotate("segment", x = -6, xend = -8, y = -5.5, yend = -5.5, 
+           arrow = arrow(length = unit(.5, "lines")), 
+           size = 1, colour = "grey50") + 
+  geom_hline(aes(yintercept = 0)) + 
+  # geom_abline(slope = -1, size = 1) +
+  geom_segment(aes(x = -7, y = 7, xend = 0, yend = 0), size = 1) +
+  geom_segment(aes(x = 0, y = 0, xend = 7, yend = -7), size = 1) +
+  geom_vline(aes(xintercept = 0)) +
+  geom_segment(aes(x = -7.5, y = -7.0, xend = -.75, yend = 0), size = 1) +
+  geom_segment(aes(x = -9.5, y = -7.0, xend = -2.75, yend = 0), size = 1, lty = "dashed") +
+  geom_segment(aes(x = 4.5, y = 5, xend = -5.25, yend = 5), lty = "dotted") +
+  geom_segment(aes(x = -5.25, y = 5, xend = -5.25, yend = -4.5), lty = "dotted") +
+  geom_segment(aes(x = -5.25, y = -4.5, xend = 4.5, yend = -4.5), lty = "dotted") +
+  geom_segment(aes(x = 4.5, y = -4.5, xend = 4.5, yend = 5), lty = "dotted") +
+  geom_segment(aes(x = 3, y = 5.75, xend = -5.75, yend = 5.75), lty = "dashed") +
+  geom_segment(aes(x = -5.75, y = 5.75, xend = -5.75, yend = -3), lty = "dashed") +
+  geom_segment(aes(x = -5.75, y = -3, xend = 3, yend = -3), lty = "dashed") +
+  geom_segment(aes(x = 3, y = -3, xend = 3, yend = 5.75), lty = "dashed") +
+  geom_text(data = plot_label, aes(x = x, y = y, label = label), 
+            parse = TRUE)  +
+  geom_text(data = axis_labels, aes(x = x, y = y, label = label),
+            size = 4.5)  +
+  geom_text(data = Mercados, aes(x = x, y = y, label = label), 
+            size = 3.5) +
+  geom_text(data = Romans, aes(x = x, y = y, label = label), 
+            size = 4, fontface = "bold") +
+  coord_equal() +
+  labs(x = NULL, y = NULL, 
+       title = "Choque de Custos",
+       caption = "Elaborado pelo Eng.º Luiz F. P. Droubi. Adaptado de DiPasquale e Wheaton (1996 apud Adams e Füss 2010)") +
+  theme_classic() +
+  theme(axis.line=element_blank(), 
+        axis.title.y = element_text(angle = 0, hjust = .9)) +
+  scale_x_continuous(expand = c(.025, .025), breaks = NULL, limits = c(-10, 10)) +
+  scale_y_continuous(expand = c(.025, .025), breaks = NULL, limits = c(-10, 10))
+p3
+```
+
+## Como entender o mercado imobiliário (1) {.smaller}
+
+1.  A pandemia de Covid-19 acarretou num aumento dos custos de construção, porém os juros de longo prazo também cederam:
+
+. . .
+
+```{r}
+#| label: CC
+#| fig-cap: "Elevação dos custos de construção"
+#| out-width: "65%"
+knitr::include_graphics("./img/CC.jpg")
+```
+
+## Como entender o mercado imobiliário (1) {.smaller}
+
+-   O aumento dos custos de construção diminui o *output* do mercado de construção, o que leva a uma diminuição do estoque, o que por sua vez aumenta o preço dos aluguéis.
+
+## Como entender o mercado imobiliário (2) {.smaller}
+
+2.  Após a pandemia, os juros de longo prazo, que haviam caído, voltaram a elevar-se:
+
+. . .
+
+```{r}
+#| label: JURO1
+#| fig-cap: "Elevação dos juros no longo prazo"
+#| out-width: "70%"
+knitr::include_graphics("./img/arte18fin-301-juros-c1.webp")
+```
+
+## Como entender o mercado imobiliário (3) {.smaller}
+
+-   O aumento dos juros de longo prazo diminue o apetite dos investidores por imóveis e impacta o mercado de construção, o que também leva a aumento dos aluguéis.
+
+## Como entender o mercado imobiliário (4) {.smaller}
+
+-   Uma visão de prazo maior:
+
+. . .
+
+```{r}
+#| label: SELIC
+#| fig-cap: "Taxa Selic Real ex-post (evolução). Fonte: https://blogdoibre.fgv.br/posts/evolucao-historica-das-taxas-de-juros-reais-e-de-seus-determinantes-no-brasil"
+#| out-width: "80%"
+knitr::include_graphics("./img/SelicReal_Evolucao.png")
+```
+
+## Como entender o mercado imobiliário (5) {.smaller}
+
+3.  A atividade econômica vem se recuperando após o baque da pandemia de COVID-19:
+
+. . .
+
+```{r}
+#| label: PIB2
+#| fig-cap: "Recuperação do PIB após a pandemia"
+#| out-width: "80%"
+knitr::include_graphics("./img/PIB2.png")
+```
+
+## Como entender o mercado imobiliário (6) {.smaller}
+
+-   O aumento da atividade econômica leva ao aumento do preço dos aluguéis.
+
+## Como entender o mercado imobiliário (7)
+
+-   Resultado:
+
+. . .
+
+```{r}
+#| label: IVAR
+#| fig-cap: "Variação percentual acumulada em 12 meses."
+#| out-width: "80%"
+knitr::include_graphics("./img/IVAR_evolucao.png")
+```
+
+## Como entender o mercado imobiliário (8)
+
+-   Para melhor compreender o slide anterior:
+
+. . .
+
+```{r}
+#| label: IVAR2
+#| fig-cap: "Variação percentual acumulada em 12 meses."
+#| out-width: "80%"
+knitr::include_graphics("./img/variacao_acumulada_em_12_meses._ivar.jpeg")
+```
+
+## Como entender o mercado imobiliário (9)
+
+-   Visão de mais longo prazo:
+
+. . .
+
+```{r}
+#| label: rentabilidade
+#| fig-cap: "Rentabilidade do Aluguel (% a.a.)"
+#| out-width: "80%"
+knitr::include_graphics("./img/Rent-Aluguel-resid.jpg")
+```
+
+## Referências
